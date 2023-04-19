@@ -15,11 +15,9 @@ if __name__ == '__main__':
     # Create game mechanics with walls and other stuff
     gmech = game_mech.GameMech(30, 30)
 
-
-
 # Add a player (myself)
     nr = gmech.add_player('jose',1,1)
-    #nr = gmech.add_player('joao',10,10)
+    nr = gmech.add_player('joao',10,10)
 
     # Start the visual part and the rest...
     gm = game.Game(gmech,30)

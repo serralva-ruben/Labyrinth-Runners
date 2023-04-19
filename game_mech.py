@@ -62,16 +62,17 @@ class GameMech :
 
         maze = MazeGenerator(self.x_max,self.y_max)
         grid = maze.generate_maze()
-
-        plt.imshow(grid, cmap='gray', interpolation='nearest')
-        plt.draw()
-        plt.pause(0.0001)
                 
         for x in range(self.x_max):
             print(f"{x}  {grid[x]}")
             for y in range(self.y_max):
                 if grid[x][y] == 1:
                     self.add_obstacle("wall", y, x)
+
+        #Shown the grid generated for the maze
+        plt.imshow(grid, cmap='gray', interpolation='nearest')
+        plt.draw()
+        plt.pause(0.0001)
 
     def is_obstacle(self,type, x,y):
         for e in self.world[(x,y)]:

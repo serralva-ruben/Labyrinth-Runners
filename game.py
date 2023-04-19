@@ -32,6 +32,11 @@ class Game(object):
         self.background.fill(self.white)
         self.screen.blit(self.background,(0,0))
         self.draw_grid(self.black)
+
+         # Create surface for hiding everything outside of the player's radius
+        self.hide_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
+        self.hide_surface.fill((255, 255, 255, 255))
+
         pygame.display.update()
 
 
@@ -49,8 +54,8 @@ class Game(object):
         self.players = pygame.sprite.LayeredDirty()
         nr_players = self.gm.get_nr_players()
         # Test
-        print("Game2, Nr. of players:", nr_players)
-        print("Game2, Players:", self.pl)
+        print("Labyrinth Runners, Nr. of players:", nr_players)
+        print("Labyrinth Runners, Players:", self.pl)
         for nr in range(nr_players):
             if self.pl[nr] != []:
                     # Test
@@ -58,6 +63,17 @@ class Game(object):
                     p_x, p_y  = self.pl[nr][1][0], self.pl[nr][1][1]
                     player = Player(nr, self.pl[nr][0], p_x, p_y, self.grid_size, self.players)
                     self.players.add(player)
+
+    def hideE(self):
+        self.hide_surface.fill((0, 0, 0, 255))
+        radius = 100
+        p = self.gm.get_players()
+        for player in p:
+            circle_pos = (p[player][1][0] + self.players.sprites()[player].rect.x,p[player][1][1] + self.players.sprites()[player].rect.y)
+            pygame.draw.circle(self.hide_surface, (255, 255, 255, 0), circle_pos, radius)
+            self.hide_surface.set_clip(None)
+        self.screen.blit(self.hide_surface, (0,0), special_flags=pygame.BLEND_RGBA_MIN)
+            
 
 
     def set_walls(self, wall_size:int):
@@ -91,10 +107,14 @@ class Game(object):
                     # send information "disconnected"
                     # if answer is ok, them end is true
                     end = True
-            self.walls.update()
+            
+            self.walls.draw(self.screen)
             self.players.update(self.gm)
-            rects = self.players.draw(self.screen)
+            self.players.draw(self.screen)
             self.draw_grid(self.black)
-            pygame.display.update(rects)
+            self.hideE()
+            pygame.display.flip()
             self.players.clear(self.screen,self.background)
+            self.screen.fill((255,255,255))
+
         return True
