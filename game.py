@@ -64,13 +64,13 @@ class Game(object):
                     player = Player(nr, self.pl[nr][0], p_x, p_y, self.grid_size, self.players)
                     self.players.add(player)
 
-    def hideE(self):
+    def drawDarkness(self):
         self.hide_surface.fill((0, 0, 0, 255))
-        radius = 100
         p = self.gm.get_players()
         for player in p:
-            circle_pos = (p[player][1][0] + self.players.sprites()[player].rect.x,p[player][1][1] + self.players.sprites()[player].rect.y)
-            pygame.draw.circle(self.hide_surface, (255, 255, 255, 0), circle_pos, radius)
+            print(p[player])
+            circle_pos = (p[player][1][0] + self.players.sprites()[player].rect.x, p[player][1][1] + self.players.sprites()[player].rect.y)
+            pygame.draw.circle(self.hide_surface, (255, 255, 255, 0), circle_pos, p[player][3])
             self.hide_surface.set_clip(None)
         self.screen.blit(self.hide_surface, (0,0), special_flags=pygame.BLEND_RGBA_MIN)
             
@@ -112,7 +112,7 @@ class Game(object):
             self.players.update(self.gm)
             self.players.draw(self.screen)
             self.draw_grid(self.black)
-            self.hideE()
+            self.drawDarkness()
             pygame.display.flip()
             self.players.clear(self.screen,self.background)
             self.screen.fill((255,255,255))

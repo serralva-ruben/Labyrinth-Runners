@@ -64,15 +64,10 @@ class GameMech :
         grid = maze.generate_maze()
                 
         for x in range(self.x_max):
-            print(f"{x}  {grid[x]}")
             for y in range(self.y_max):
                 if grid[x][y] == 1:
                     self.add_obstacle("wall", y, x)
 
-        #Shown the grid generated for the maze
-        plt.imshow(grid, cmap='gray', interpolation='nearest')
-        plt.draw()
-        plt.pause(0.0001)
 
     def is_obstacle(self,type, x,y):
         for e in self.world[(x,y)]:
@@ -111,7 +106,7 @@ class GameMech :
     #
     # Each player has a specific time.
     #
-    def add_player(self,name, x_pos:int, y_pos:int ) -> int:
+    def add_player(self,name, x_pos:int, y_pos:int, radius:int) -> int:
         '''
         :param name: the name of the player
         :param x_pos:
@@ -128,7 +123,7 @@ class GameMech :
         #
         tick = int(time.time() )
 
-        self.players[nr_player]=[ name, (x_pos, y_pos),tick]
+        self.players[nr_player]=[ name, (x_pos, y_pos),tick,radius]
         self.world[(x_pos, y_pos)].append(['player',name, nr_player,(x_pos, y_pos)])
         self.nr_players += 1
 
@@ -144,6 +139,7 @@ class GameMech :
             name = self.players[nr_player][0]
             pos_x, pos_y = self.players[nr_player][1][0], self.players[nr_player][1][1]
             tick = self.players[nr_player][2]
+            radius = self.players[nr_player][3]
             if move == M_LEFT:
                 # Get the atual position of the player
                 # New position
@@ -184,7 +180,7 @@ class GameMech :
                 #print("Next tick:",next_tick)
                 tick = next_tick
                 # Update world
-                self.players[nr_player] =[name, (new_pos_x, new_pos_y), tick]
+                self.players[nr_player] =[name, (new_pos_x, new_pos_y), tick, radius]
                 # Previous objects in the initial position before phanton moves
                 world_pos = self.world[(pos_x, pos_y)]
                 # Test
@@ -204,7 +200,6 @@ class GameMech :
 
     def print_pos(self, x: int, y:int):
         print("(x= ",x,", y=", y, ") =", self.world[(x, y)])
-
 
     def print_world(self):
         for i in range(self.x_max):
