@@ -10,21 +10,22 @@ M_DOWN = 2
 M_LEFT = 3
 TIME_STEP = 7.5
 
-class GameMech :
-    def __init__(self, x_max:int= 20, y_max:int = 20) -> None:
-        '''
+
+class GameMech:
+    def __init__(self, x_max: int = 20, y_max: int = 20) -> None:
+        """
         Create a dictionary where each position will keep the elements that are in each position and
         a dictionary with player information (name, nr. of points, etc.)
         :param x_max:
         :param y_max:
-        '''
+        """
         self.x_max = x_max
         self.y_max = y_max
         # List of players
         self.players = dict()
-        # List of players that changed position. It has the following struture:
+        # List of players that changed position. It has the following structure:
         # [previous position, new_position] where the first position is the initial position when the key is created
-        self.phanton_players = dict()
+        self.phantom_players = dict()
         # List of obstacles
         self.obstacles = dict()
         # Number of players and obstacles in the game
@@ -40,27 +41,26 @@ class GameMech :
         # TEST
         self.counting = 0
 
-    def add_obstacle(self, type:str, x_pos:int, y_pos:int) -> bool:
-        '''
-        :param name:
+    def add_obstacle(self, types: str, x_pos: int, y_pos: int) -> bool:
+        """
+
+        :param types:
         :param x_pos:
         :param y_pos:
         :return:
-        '''
+        """
         nr_obstacle = self.nr_obstacles
-        self.obstacles[nr_obstacle] = [type, (x_pos, y_pos)]
-        self.world[(x_pos, y_pos)].append(['obstacle', type, nr_obstacle, (x_pos, y_pos)])
+        self.obstacles[nr_obstacle] = [types, (x_pos, y_pos)]
+        self.world[(x_pos, y_pos)].append(['obstacle', types, nr_obstacle, (x_pos, y_pos)])
         self.nr_obstacles += 1
         return True
     
     def create_world(self):
-        '''
+        """
         Define the initial world with the position of the obstacles
-
         :return:
-        '''
-
-        maze = MazeGenerator(self.x_max,self.y_max)
+        """
+        maze = MazeGenerator(self.x_max, self.y_max)
         grid = maze.generate_maze()
                 
         for x in range(self.x_max):
@@ -68,16 +68,13 @@ class GameMech :
                 if grid[x][y] == 1:
                     self.add_obstacle("wall", y, x)
 
-
-    def is_obstacle(self,type, x,y):
-        for e in self.world[(x,y)]:
-            if e[0] == 'obstacle' and e[1]==type:
+    def is_obstacle(self, types, x, y):
+        for e in self.world[(x, y)]:
+            if e[0] == 'obstacle' and e[1] == types:
                 return True
         return False
 
-    #
     # Getters
-    #
     def get_players(self):
         return self.players
 
@@ -94,25 +91,29 @@ class GameMech :
         if nr_player <= self.nr_players:
             name = self.players[nr_player][0]
             x_pos, y_pos = self.players[nr_player][1][0], self.players[nr_player][1][1]
-            self.world[(x_pos, y_pos)].remove(['player',name,nr_player,(x_pos, y_pos)])
-            self.players[nr_player]=[]
+            self.world[(x_pos, y_pos)].remove(['player', name, nr_player, (x_pos, y_pos)])
+            self.players[nr_player] = []
         return nr_player
 
     def print_players(self):
-        for p in self.players:
-            print("Nr. ",p)
-            print("Value:",self.players[p])
+        """
 
-    #
+        :return:
+        """
+        for p in self.players:
+            print("Nr. ", p)
+            print("Value:", self.players[p])
+
     # Each player has a specific time.
-    #
-    def add_player(self,name, x_pos:int, y_pos:int, radius:int) -> int:
-        '''
+    def add_player(self, name, x_pos: int, y_pos: int, radius: int) -> int:
+        """
+
         :param name: the name of the player
         :param x_pos:
         :param y_pos:
+        :param radius:
         :return: return the number of player
-        '''
+        """
         nr_player = self.nr_players
         #
         # Collect the actual tick and keep it in the player
@@ -121,27 +122,30 @@ class GameMech :
         # going to change in the implementations with sockets where time is the
         # absolute value that comes from the server.
         #
-        tick = int(time.time() )
+        tick = int(time.time())
 
-        self.players[nr_player]=[ name, (x_pos, y_pos),tick,radius]
-        self.world[(x_pos, y_pos)].append(['player',name, nr_player,(x_pos, y_pos)])
+        self.players[nr_player] = [name, (x_pos, y_pos), tick, radius]
+        self.world[(x_pos, y_pos)].append(['player', name, nr_player, (x_pos, y_pos)])
         self.nr_players += 1
 
         return nr_player
 
-    def execute(self,move: int, type:str, nr_player:int ) -> tuple:
-        '''
+    def execute(self, move: int, types: str, nr_player: int) -> tuple:
+        """
         Execute the actions. Each new tic, the world execute the actions. The players must ask
         to print the actual world.
+        :param move:
+        :param types:
+        :param nr_player:
         :return:
-        '''
-        if type == "player":
+        """
+        if types == "player":
             name = self.players[nr_player][0]
             pos_x, pos_y = self.players[nr_player][1][0], self.players[nr_player][1][1]
             tick = self.players[nr_player][2]
             radius = self.players[nr_player][3]
             if move == M_LEFT:
-                # Get the atual position of the player
+                # Get the actual position of the player
                 # New position
                 new_pos_x = pos_x - 1
                 new_pos_y = pos_y
@@ -169,39 +173,49 @@ class GameMech :
             # Only after the tick the changes are performed (to coordinate among players)
             next_tick = int(time.time() * TIME_STEP)
             # Test
-            #print("Tick:",self.tick)
-            #print("Next tick:",next_tick)
+            # print("Tick:",self.tick)
+            # print("Next tick:",next_tick)
             # End test
             if next_tick > tick:
                 # Test
-                self.counting +=1
-                #print(self.counting)
-                #print("Tick:",self.tick)
-                #print("Next tick:",next_tick)
+                self.counting += 1
+                # print(self.counting)
+                # print("Tick:", self.tick)
+                # print("Next tick:", next_tick)
                 tick = next_tick
                 # Update world
-                self.players[nr_player] =[name, (new_pos_x, new_pos_y), tick, radius]
-                # Previous objects in the initial position before phanton moves
+                self.players[nr_player] = [name, (new_pos_x, new_pos_y), tick, radius]
+                # Previous objects in the initial position before phantom moves
                 world_pos = self.world[(pos_x, pos_y)]
                 # Test
-                #print("Removing player in the position ", pos_x, ",", pos_y,":",world_pos)
-                #print("Name:",name)
-                #print("Nr_player:",nr_player)
+                # print("Removing player in the position ", pos_x, ",", pos_y,":",world_pos)
+                # print("Name:",name)
+                # print("Nr_player:",nr_player)
                 # Removing object player in the previous position
-                world_pos.remove(['player',name,nr_player, (pos_x,pos_y)])
+                world_pos.remove(['player', name, nr_player, (pos_x, pos_y)])
                 # Update the world with objects remaining in the position
                 self.world[(pos_x, pos_y)] = world_pos
-                self.world[(new_pos_x, new_pos_y)].append(['player',name,nr_player,(new_pos_x, new_pos_y)])
+                self.world[(new_pos_x, new_pos_y)].append(['player', name, nr_player, (new_pos_x, new_pos_y)])
             else:
                 # Revert the changes because there was no movement...
                 new_pos_x = pos_x
                 new_pos_y = pos_y
-            return (new_pos_x, new_pos_y)
+            return new_pos_x, new_pos_y
 
-    def print_pos(self, x: int, y:int):
-        print("(x= ",x,", y=", y, ") =", self.world[(x, y)])
+    def print_pos(self, x: int, y: int):
+        """
+
+        :param x:
+        :param y:
+        :return:
+        """
+        print("(x= ", x, ", y=", y, ") =", self.world[(x, y)])
 
     def print_world(self):
+        """
+
+        :return:
+        """
         for i in range(self.x_max):
             for j in range(self.y_max):
                 print("(", i, ",", j, ") =", self.world[(i, j)])
