@@ -1,13 +1,10 @@
 import socket
 from typing import Union
-
 import const
 
 
 # Stub do lado do cliente: como comunicar com o servidor...
-
 class StubClient:
-
     def __init__(self):
         self.s: socket = socket.socket()
         self.s.connect((const.ADDRESS, const.PORT))

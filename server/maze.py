@@ -77,6 +77,3 @@ class MazeGenerator:
         y = (y1 + y2) // 2
         self.grid[x1][y1] = 0
         self.grid[x][y] = 0
-
-   
-    

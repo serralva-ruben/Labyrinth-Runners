@@ -4,12 +4,14 @@ from player import Player
 import client_stub
 
 
-# ---------------------
-# The grid now is built based on the number of squares in x and y.
-# This allows us to associate the size of the space to a matrix or to a dictionary
-# that will keep data about each position in the environment.
-# Moreover, we now can control the movement of the objects.
-# We now separate the control of the environment
+"""
+The grid now is built based on the number of squares in x and y.
+This allows us to associate the size of the space to a matrix or to a dictionary
+that will keep data about each position in the environment.
+Moreover, we now can control the movement of the objects.
+We now separate the control of the environment
+"""
+
 
 class GameUI(object):
     def __init__(self, stub: client_stub.StubClient, grid_size: int = 20):
@@ -19,7 +21,7 @@ class GameUI(object):
         self.stub = stub
         self.width, self.height = self.x_max * grid_size, self.y_max * grid_size
         self.screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption("first game")
+        pygame.display.set_caption("Labyrinth Runners")
         self.clock = pygame.time.Clock()
         # RGB colours
         self.white = (255, 255, 255)
