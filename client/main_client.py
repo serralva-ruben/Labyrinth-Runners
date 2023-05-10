@@ -9,5 +9,4 @@ def main():
     ui = GameUI(stub)
     ui.run()
 
-
 main()
