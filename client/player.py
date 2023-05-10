@@ -1,5 +1,5 @@
 import pygame
-import game_mech
+import client_stub
 
 
 # Defining constants for the moves
@@ -31,24 +31,24 @@ class Player(pygame.sprite.DirtySprite):
         # Keep visible
         self.dirty = 1
 
-    def update(self, gm: game_mech.GameMech):
+    def update(self, stub: client_stub.StubClient):
         # last = self.rect.copy()
         # print("Updating player ", self.name, " with the number ", self.number)
         key = pygame.key.get_pressed()
         if key[pygame.K_LEFT]:
-            pos = gm.execute(M_LEFT, "player", self.number)
+            pos = stub.execute(M_LEFT, "player", self.number)
             if self.rect.x != pos[0]:
                 self.rect.x = pos[0] * self.sq_size
         if key[pygame.K_RIGHT]:
-            pos = gm.execute(M_RIGHT, "player", self.number)
+            pos = stub.execute(M_RIGHT, "player", self.number)
             if self.rect.x != pos[0]:
                 self.rect.x = pos[0] * self.sq_size
         if key[pygame.K_UP]:
-            pos = gm.execute(M_UP, "player", self.number)
+            pos = stub.execute(M_UP, "player", self.number)
             if self.rect.y != pos[1]:
                 self.rect.y = pos[1] * self.sq_size
         if key[pygame.K_DOWN]:
-            pos = gm.execute(M_DOWN, "player", self.number)
+            pos = stub.execute(M_DOWN, "player", self.number)
             if self.rect.y != pos[1]:
                 self.rect.y = pos[1] * self.sq_size
 

@@ -1,7 +1,7 @@
 import pygame
 from wall import Wall
 from player import Player
-import game_mech
+import client_stub
 
 
 # ---------------------
@@ -11,11 +11,12 @@ import game_mech
 # Moreover, we now can control the movement of the objects.
 # We now separate the control of the environment
 
-class Game(object):
-    def __init__(self, gm: game_mech.GameMech, grid_size: int = 20):
-        self.x_max = gm.x_max
-        self.y_max = gm.y_max
-        self.gm = gm
+class GameUI(object):
+    def __init__(self, stub: client_stub.StubClient, grid_size: int = 20):
+        dim: tuple = stub.dimension_size()
+        self.x_max = dim[0]
+        self.y_max = dim[1]
+        self.stub = stub
         self.width, self.height = self.x_max * grid_size, self.y_max * grid_size
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("first game")
@@ -46,9 +47,9 @@ class Game(object):
             pygame.draw.line(self.screen, colour, (0, y * self.grid_size), (self.width, y * self.grid_size))
 
     def set_players(self):
-        self.pl = self.gm.get_players()
+        self.pl = self.stub.get_players()
         self.players = pygame.sprite.LayeredDirty()
-        nr_players = self.gm.get_nr_players()
+        nr_players = self.stub.get_nr_players()
         # Test
         print("Labyrinth Runners, Nr. of players:", nr_players)
         print("Labyrinth Runners, Players:", self.pl)
@@ -62,7 +63,7 @@ class Game(object):
 
     def draw_darkness(self):
         self.hide_surface.fill((0, 0, 0, 255))
-        p = self.gm.get_players()
+        p = self.stub.get_players()
         for player in p:
             print(p[player])
             circle_pos = (p[player][1][0] + self.players.sprites()[player].rect.x, p[player][1][1] +
@@ -72,10 +73,10 @@ class Game(object):
         self.screen.blit(self.hide_surface, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
 
     def set_walls(self, wall_size: int):
-        self.wl = self.gm.get_obstacles()
+        self.wl = self.stub.get_obstacles()
         # Create Wall (sprites) around world
         self.walls = pygame.sprite.Group()
-        nr_obstacles = self.gm.get_nr_obstacles()
+        nr_obstacles = self.stub.get_nr_obstacles()
         for nr in range(nr_obstacles):
             if self.wl[nr]:
                 w_x, w_y = self.wl[nr][1][0], self.wl[nr][1][1]
@@ -88,7 +89,7 @@ class Game(object):
         self.walls.draw(self.screen)
         self.set_players()
         end = False
-        # previous_tick = self.gm.get_tick()
+        # previous_tick = self.stub.get_tick()
 
         # World is updated every time
         world = dict()
@@ -104,7 +105,7 @@ class Game(object):
                     end = True
 
             self.walls.draw(self.screen)
-            self.players.update(self.gm)
+            self.players.update(self.stub)
             self.players.draw(self.screen)
             self.draw_grid(self.black)
             self.draw_darkness()
