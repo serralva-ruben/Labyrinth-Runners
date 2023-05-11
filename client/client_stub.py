@@ -2,6 +2,7 @@ import socket
 import const
 import pickle
 import struct
+import time
 
 # Stub do lado do cliente: como comunicar com o servidor...
 class StubClient:
@@ -86,18 +87,22 @@ class StubClient:
                 break
             received_data.extend(chunk)
             print("Received Chunk:", chunk)  # Print the received chunk for debugging
+            if b"<END>" in received_data:
+                break
 
         print("Received Data Length:", len(received_data))  # Print the received data length for debugging
         print("Received Data:", received_data)  # Print the received data for debugging
 
         if len(received_data) > 0:
+            # Remove the sentinel value from the received data
+            received_data = received_data.replace(b"<END>", b"")
             # Deserialize the data
             decoded_data = pickle.loads(received_data)
             print(decoded_data)
-            return decoded_data
-        else:
-            # Return a default position if no data received
-            return (0, 0)
+            if decoded_data is not None:
+                return decoded_data
+        # Return a default position if no data received or if decoded_data is None
+        return (0, 0)
     
     def addPlayer(self, name) -> int:
         msg = const.new_Player
