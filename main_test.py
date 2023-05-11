@@ -1,7 +1,6 @@
 import pygame
-from server.maze import *
 import server.game_mech as game_mech
-import client.game_client as game
+import client.game as game
 
 
 # Press the green button in the gutter to run the script.
