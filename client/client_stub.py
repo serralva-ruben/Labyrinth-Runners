@@ -90,15 +90,21 @@ class StubClient:
         print("Received Data Length:", len(received_data))  # Print the received data length for debugging
         print("Received Data:", received_data)  # Print the received data for debugging
 
-        # Deserialize the data
-        decoded_data = pickle.loads(received_data)
-        print(decoded_data)
-        return decoded_data
+        if len(received_data) > 0:
+            # Deserialize the data
+            decoded_data = pickle.loads(received_data)
+            print(decoded_data)
+            return decoded_data
+        else:
+            # Return a default position if no data received
+            return (0, 0)
     
     def addPlayer(self, name) -> int:
         msg = const.new_Player
         if len(name)<3:
             msg += name
+        print(msg)
+        print(msg[0:2])
         self.s.send(msg.encode(const.STRING_ENCODING))
         value = self.s.recv(const.N_BYTES)
         nr_player = int.from_bytes(value, byteorder="big", signed=True)

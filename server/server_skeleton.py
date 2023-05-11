@@ -71,8 +71,12 @@ class SkeletonServer:
         pos = self.gm.execute(move, types, number)
         data = pickle.dumps(pos)
 
-        # Send the serialized data with a sentinel value
-        s_c.sendall(data + b"<END>")
+        # Send the length of the serialized data as a fixed-size header
+        length_bytes = len(data).to_bytes(4, byteorder='big')
+        s_c.sendall(length_bytes)
+
+        # Send the serialized data
+        s_c.sendall(data)
 
     def newPlayer(self, s_c, msg):
         name = msg[2:4]
@@ -92,7 +96,7 @@ class SkeletonServer:
             msg = received_data.decode(const.STRING_ENCODING)
             #logging.debug("o cliente enviou: \"" + msg + "\"")
 
-            if msg == const.X_MAX:
+            if len(msg)>0 and msg == const.X_MAX:
                 self.process_x_max(socket_client)
             elif msg == const.Y_MAX:
                 self.process_y_max(socket_client)
@@ -106,7 +110,7 @@ class SkeletonServer:
                 self.get_nr_obstacles(socket_client)
             elif msg[0] == const.execute:
                 self.execute(socket_client,msg)
-            elif msg[0:1] == const.new_Player:
+            elif msg[0:2] == const.new_Player:
                 self.newPlayer(socket_client,msg)
             elif msg == const.END:
                 end = True

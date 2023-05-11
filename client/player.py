@@ -14,7 +14,7 @@ class Player(pygame.sprite.DirtySprite):
         super().__init__(*groups)
         self.number = number
         self.name = name
-        self.image = pygame.image.load('./pictures/intro_ball.gif')
+        self.image = pygame.image.load('./client/pictures/intro_ball.gif')
         initial_size = self.image.get_size()
         self.sq_size = sq_size
         size_rate = sq_size / initial_size[0]

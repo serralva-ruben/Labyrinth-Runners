@@ -3,7 +3,7 @@ from server_skeleton import SkeletonServer
 
 
 def main():
-    gm = GameMech()
+    gm = GameMech(20,20)
     skeleton = SkeletonServer(gm)
     skeleton.run()
 

@@ -131,77 +131,57 @@ class GameMech:
         return nr_player
 
     def execute(self, move: int, types: str, nr_player: int) -> tuple:
-        """
-        Execute the actions. Each new tic, the world execute the actions. The players must ask
-        to print the actual world.
-        :param move:
-        :param types:
-        :param nr_player:
-        :return:
-        """
         if types == "player":
-            name = self.players[nr_player][0]
-            pos_x, pos_y = self.players[nr_player][1][0], self.players[nr_player][1][1]
-            tick = self.players[nr_player][2]
-            radius = self.players[nr_player][3]
-            if move == M_LEFT:
-                # Get the actual position of the player
-                # New position
-                new_pos_x = pos_x - 1
-                new_pos_y = pos_y
-                # if there is an obstacle
-                if self.is_obstacle('wall', new_pos_x, new_pos_y):
-                    new_pos_x = pos_x
-            elif move == M_RIGHT:
-                # New position
-                new_pos_x = pos_x + 1
-                new_pos_y = pos_y
-                if self.is_obstacle('wall', new_pos_x, new_pos_y):
-                    new_pos_x = pos_x
-            elif move == M_UP:
-                # New position
-                new_pos_y = pos_y - 1
-                new_pos_x = pos_x
-                if self.is_obstacle('wall', new_pos_x, new_pos_y):
+            if nr_player in self.players:
+                name = self.players[nr_player][0]
+                pos_x, pos_y = self.players[nr_player][1][0], self.players[nr_player][1][1]
+                tick = self.players[nr_player][2]
+                radius = self.players[nr_player][3]
+                if move == M_LEFT:
+                    # Get the actual position of the player
+                    # New position
+                    new_pos_x = pos_x - 1
                     new_pos_y = pos_y
-            elif move == M_DOWN:
-                # New position
-                new_pos_y = pos_y + 1
-                new_pos_x = pos_x
-                if self.is_obstacle('wall', new_pos_x, new_pos_y):
-                    new_pos_y = pos_y
-            # Only after the tick the changes are performed (to coordinate among players)
-            next_tick = int(time.time() * TIME_STEP)
-            # Test
-            # print("Tick:",self.tick)
-            # print("Next tick:",next_tick)
-            # End test
-            if next_tick > tick:
-                # Test
-                self.counting += 1
-                # print(self.counting)
-                # print("Tick:", self.tick)
-                # print("Next tick:", next_tick)
-                tick = next_tick
-                # Update world
-                self.players[nr_player] = [name, (new_pos_x, new_pos_y), tick, radius]
-                # Previous objects in the initial position before phantom moves
-                world_pos = self.world[(pos_x, pos_y)]
-                # Test
-                # print("Removing player in the position ", pos_x, ",", pos_y,":",world_pos)
-                # print("Name:",name)
-                # print("Nr_player:",nr_player)
-                # Removing object player in the previous position
-                world_pos.remove(['player', name, nr_player, (pos_x, pos_y)])
-                # Update the world with objects remaining in the position
-                self.world[(pos_x, pos_y)] = world_pos
-                self.world[(new_pos_x, new_pos_y)].append(['player', name, nr_player, (new_pos_x, new_pos_y)])
-            else:
-                # Revert the changes because there was no movement...
-                new_pos_x = pos_x
-                new_pos_y = pos_y
-            return new_pos_x, new_pos_y
+                    # if there is an obstacle
+                    if self.is_obstacle('wall', new_pos_x, new_pos_y):
+                        new_pos_x = pos_x
+                    elif move == M_RIGHT:
+                        # New position
+                        new_pos_x = pos_x + 1
+                        new_pos_y = pos_y
+                        if self.is_obstacle('wall', new_pos_x, new_pos_y):
+                            new_pos_x = pos_x
+                    elif move == M_UP:
+                        # New position
+                        new_pos_y = pos_y - 1
+                        new_pos_x = pos_x
+                        if self.is_obstacle('wall', new_pos_x, new_pos_y):
+                            new_pos_y = pos_y
+                    elif move == M_DOWN:
+                        # New position
+                        new_pos_y = pos_y + 1
+                        new_pos_x = pos_x
+                        if self.is_obstacle('wall', new_pos_x, new_pos_y):
+                            new_pos_y = pos_y
 
+                    # Only after the tick the changes are performed (to coordinate among players)
+                    next_tick = int(time.time() * TIME_STEP)
+                    if next_tick > tick:
+                        tick = next_tick
+                        # Update world
+                        self.players[nr_player] = [name, (new_pos_x, new_pos_y), tick, radius]
+                        # Previous objects in the initial position before phantom moves
+                        world_pos = self.world[(pos_x, pos_y)]
+                        # Removing object player in the previous position
+                        world_pos.remove(['player', name, nr_player, (pos_x, pos_y)])
+                        # Update the world with objects remaining in the position
+                        self.world[(pos_x, pos_y)] = world_pos
+                        self.world[(new_pos_x, new_pos_y)].append(['player', name, nr_player, (new_pos_x, new_pos_y)])
+                    else:
+                        # Revert the changes because there was no movement...
+                        new_pos_x = pos_x
+                        new_pos_y = pos_y
+                    return new_pos_x, new_pos_y
     def print_pos(self, x: int, y: int):
         """
 

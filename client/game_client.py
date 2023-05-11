@@ -57,7 +57,7 @@ class GameUI(object):
             if self.pl[nr] != []:
                 p_x, p_y = self.pl[nr][1][0], self.pl[nr][1][1]
                 player = Player(nr, self.pl[nr][0], p_x, p_y, self.grid_size, self.players)
-                self.players.add(player, self.player_nr)
+                self.players.add(player)
 
     def draw_darkness(self):
         self.hide_surface.fill((0, 0, 0, 255))
