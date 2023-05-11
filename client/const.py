@@ -7,3 +7,7 @@ N_BYTES = 2
 STRING_ENCODING = 'utf-8'
 X_MAX = "max x"
 Y_MAX = "max y"
+get_Players = "gt_Pl"
+get_nr_Players ="g_n_P"
+get_Obstacles = "gt_Ob"
+get_nr_Obstacles ="g_n_O"

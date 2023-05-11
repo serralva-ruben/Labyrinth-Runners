@@ -65,13 +65,13 @@ class SkeletonServer:
                 self.process_x_max(socket_client)
             elif msg == const.Y_MAX:
                 self.process_y_max(socket_client)
-            elif msg =="get Players":
+            elif msg == const.get_Players :
                 self.get_Players(socket_client)
-            elif msg =="get nr Players":
+            elif msg == const.get_nr_Players :
                 self.get_nr_Players(socket_client)
-            elif msg =="get obstacles":
+            elif msg == const.get_Obstacles :
                 self.get_obstacles(socket_client)
-            elif msg =="get nr obstacles":
+            elif msg == const.get_nr_Obstacles :
                 self.get_nr_obstacles(socket_client)
             elif msg == const.END:
                 end = True

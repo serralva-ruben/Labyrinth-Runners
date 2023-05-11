@@ -22,28 +22,28 @@ class StubClient:
         return x_max, y_max
     
     def get_players(self):
-        msg = "get Players"
+        msg = const.get_Players
         self.s.send(msg.encode(const.STRING_ENCODING))
         value = self.s.recv(const.N_BYTES)
         players = ""
         return players
         
     def get_nr_players(self):
-        msg = "get nr Players"
+        msg = const.get_nr_Players
         self.s.send(msg.encode(const.STRING_ENCODING))
         value = self.s.recv(const.N_BYTES)
         nr_players = int.from_bytes(value, byteorder="big", signed=True)
         return nr_players
     
     def get_obstacles(self):
-        msg = "get obstacles"
+        msg = const.get_Obstacles
         self.s.send(msg.encode(const.STRING_ENCODING))
         value = self.s.recv(const.N_BYTES)
         obstacles = ""
         return obstacles
     
     def get_nr_obstacles(self):
-        msg = "get nr obstacles"
+        msg = const.get_nr_Obstacles
         self.s.send(msg.encode(const.STRING_ENCODING))
         value = self.s.recv(const.N_BYTES)
         nr_obstacles = int.from_bytes(value, byteorder="big", signed=True)
