@@ -2,6 +2,7 @@ import socket
 import logging
 from game_mech import GameMech
 import const
+import pickle
 
 # Está no lado do servidor: Skeleton to user interface 
 # (permite ter informação de como comunicar com o cliente)
@@ -26,9 +27,15 @@ class SkeletonServer:
         s_c.send(y_max.to_bytes(const.N_BYTES, byteorder="big", signed=True))
     
     def get_Players(self, s_c):
-        # pedir ao gm os players
-        players = self.gm.get_players()
-        s_c.send(players.to_bytes(const.N_BYTES, byteorder="big", signed=True))
+        obstacles = self.gm.get_obstacles()
+        data = pickle.dumps(obstacles)
+
+        # Send the length of the byte stream to the client
+        length_bytes = len(data).to_bytes(4, byteorder='big')
+        s_c.sendall(length_bytes)
+
+        # Send the bytes to the client
+        s_c.sendall(data)
         return
     
     def get_nr_Players(self, s_c):
@@ -40,7 +47,13 @@ class SkeletonServer:
     def get_obstacles(self, s_c):
         # pedir ao gm o nr de players
         obstacles = self.gm.get_obstacles()
-        s_c.send(obstacles.to_bytes(const.N_BYTES, byteorder="big", signed=True))
+        data = pickle.dumps(obstacles)
+        # enviar o comprimento da data
+        length_bytes = len(data).to_bytes(4, byteorder='big')
+        s_c.sendall(length_bytes)
+        # enviar a data
+        s_c.sendall(data)
+
         return
     
     def get_nr_obstacles(self, s_c):

@@ -7,5 +7,4 @@ def main():
     skeleton = SkeletonServer(gm)
     skeleton.run()
 
-
 main()

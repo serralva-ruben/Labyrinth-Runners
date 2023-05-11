@@ -1,6 +1,6 @@
 import socket
-from typing import Union
 import const
+import pickle
 
 
 # Stub do lado do cliente: como comunicar com o servidor...
@@ -24,8 +24,24 @@ class StubClient:
     def get_players(self):
         msg = const.get_Players
         self.s.send(msg.encode(const.STRING_ENCODING))
-        value = self.s.recv(const.N_BYTES)
-        players = ""
+
+        length_bytes = self.s.recv(4)
+        length = int.from_bytes(length_bytes, byteorder='big')
+        
+        # Receive the length of the byte stream from the server
+        length_bytes = self.s.recv(4)
+        length = int.from_bytes(length_bytes, byteorder='big')
+
+        # Receive the bytes from the server
+        data_bytes = bytearray()
+        while len(data_bytes) < length:
+            chunk = self.s.recv(min(4096, length - len(data_bytes)))
+            if not chunk:
+                break
+            data_bytes.extend(chunk)
+
+        players = pickle.loads(data_bytes)
+        print(players)
         return players
         
     def get_nr_players(self):
@@ -38,8 +54,20 @@ class StubClient:
     def get_obstacles(self):
         msg = const.get_Obstacles
         self.s.send(msg.encode(const.STRING_ENCODING))
-        value = self.s.recv(const.N_BYTES)
-        obstacles = ""
+
+        # Receive the length of the byte stream from the server
+        length_bytes = self.s.recv(4)
+        length = int.from_bytes(length_bytes, byteorder='big')
+
+        # Receive the bytes from the server
+        data_bytes = b''
+        while len(data_bytes) < length:
+            chunk = self.s.recv(length - len(data_bytes))
+            if not chunk:
+                break
+            data_bytes += chunk
+
+        obstacles = pickle.loads(data_bytes)
         return obstacles
     
     def get_nr_obstacles(self):
