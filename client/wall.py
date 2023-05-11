@@ -4,7 +4,7 @@ import pygame
 class Wall(pygame.sprite.Sprite):
     def __init__(self, pos_x: int, pos_y: int, w_size: int, *groups):
         super().__init__(*groups)
-        self.image = pygame.image.load('./pictures/wall.jpg')
+        self.image = pygame.image.load('client/pictures/wall.jpg')
         initial_size = self.image.get_size()
         size_rate = w_size / initial_size[0]
         self.new_size = (int(self.image.get_size()[0] * size_rate), int(self.image.get_size()[1] * size_rate))
