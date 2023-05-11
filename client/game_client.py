@@ -51,6 +51,7 @@ class GameUI(object):
 
     def set_players(self):
         self.pl = self.stub.get_players()
+        print(self.pl)
         self.players = pygame.sprite.LayeredDirty()
         nr_players = self.stub.get_nr_players()
         # Test
@@ -87,16 +88,22 @@ class GameUI(object):
                 self.walls.add(wall)
 
     def run(self):
+        print("running...")
         # Create Sprites
         self.set_walls(self.grid_size)
+        print("getting walls...")
+        print(self.wl)
         self.walls.draw(self.screen)
+        print("drawing walls...")
         self.set_players()
+        print("getting players...")
         end = False
         # previous_tick = self.stub.get_tick()
 
         # World is updated every time
         world = dict()
         while not end:
+            print("running game...")
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     # send information "disconnected"

@@ -27,8 +27,9 @@ class SkeletonServer:
         s_c.send(y_max.to_bytes(const.N_BYTES, byteorder="big", signed=True))
     
     def get_Players(self, s_c):
-        obstacles = self.gm.get_obstacles()
-        data = pickle.dumps(obstacles)
+        players = self.gm.get_players()
+        data = pickle.dumps(players)
+        print(f"players: {players}")
 
         # Send the length of the byte stream to the client
         length_bytes = len(data).to_bytes(4, byteorder='big')
@@ -36,31 +37,30 @@ class SkeletonServer:
 
         # Send the bytes to the client
         s_c.sendall(data)
-        return
     
     def get_nr_Players(self, s_c):
         # pedir ao gm o nr de players
         nr_players = self.gm.get_nr_players()
+        print(f"nr_players: {nr_players}")
+        print(f"nr players : {nr_players}")
         s_c.send(nr_players.to_bytes(const.N_BYTES, byteorder="big", signed=True))
-        return
     
     def get_obstacles(self, s_c):
         # pedir ao gm o nr de players
         obstacles = self.gm.get_obstacles()
+        #print(f"walls: {obstacles}")
         data = pickle.dumps(obstacles)
         # enviar o comprimento da data
         length_bytes = len(data).to_bytes(4, byteorder='big')
         s_c.sendall(length_bytes)
         # enviar a data
         s_c.sendall(data)
-
-        return
     
     def get_nr_obstacles(self, s_c):
         # pedir ao gm o nr de players
         nr_obstacles = self.gm.get_nr_obstacles()
+        print(f"nr obstacles : {nr_obstacles}")
         s_c.send(nr_obstacles.to_bytes(const.N_BYTES, byteorder="big", signed=True))
-        return
 
     def run(self):
         logging.info("a escutar na porta " + str(const.PORT))
