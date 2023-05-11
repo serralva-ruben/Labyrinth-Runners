@@ -18,7 +18,6 @@ class GameUI(object):
         dim: tuple = stub.dimension_size()
         self.x_max = dim[0]
         self.y_max = dim[1]
-        print(self.x_max)
         self.stub = stub
         self.width, self.height = self.x_max * grid_size, self.y_max * grid_size
         self.screen = pygame.display.set_mode((self.width, self.height))
@@ -51,16 +50,10 @@ class GameUI(object):
 
     def set_players(self):
         self.pl = self.stub.get_players()
-        print(self.pl)
         self.players = pygame.sprite.LayeredDirty()
         nr_players = self.stub.get_nr_players()
-        # Test
-        print("Labyrinth Runners, Nr. of players:", nr_players)
-        print("Labyrinth Runners, Players:", self.pl)
         for nr in range(nr_players):
             if self.pl[nr] != []:
-                # Test
-                print("Game2, Player added:", nr)
                 p_x, p_y = self.pl[nr][1][0], self.pl[nr][1][1]
                 player = Player(nr, self.pl[nr][0], p_x, p_y, self.grid_size, self.players)
                 self.players.add(player)
@@ -69,7 +62,6 @@ class GameUI(object):
         self.hide_surface.fill((0, 0, 0, 255))
         p = self.stub.get_players()
         for player in p:
-            print(p[player])
             circle_pos = (p[player][1][0] + self.players.sprites()[player].rect.x, p[player][1][1] +
                           self.players.sprites()[player].rect.y)
             pygame.draw.circle(self.hide_surface, (255, 255, 255, 0), circle_pos, p[player][3])
@@ -88,22 +80,15 @@ class GameUI(object):
                 self.walls.add(wall)
 
     def run(self):
-        print("running...")
-        # Create Sprites
         self.set_walls(self.grid_size)
-        print("getting walls...")
-        print(self.wl)
         self.walls.draw(self.screen)
-        print("drawing walls...")
         self.set_players()
-        print("getting players...")
         end = False
         # previous_tick = self.stub.get_tick()
 
         # World is updated every time
         world = dict()
         while not end:
-            print("running game...")
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     # send information "disconnected"

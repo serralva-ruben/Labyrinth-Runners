@@ -24,14 +24,8 @@ class StubClient:
     def get_players(self):
         msg = const.get_Players
         self.s.send(msg.encode(const.STRING_ENCODING))
-
         length_bytes = self.s.recv(4)
         length = int.from_bytes(length_bytes, byteorder='big')
-        
-        # Receive the length of the byte stream from the server
-        length_bytes = self.s.recv(4)
-        length = int.from_bytes(length_bytes, byteorder='big')
-
         # Receive the bytes from the server
         data_bytes = bytearray()
         while len(data_bytes) < length:
@@ -39,9 +33,7 @@ class StubClient:
             if not chunk:
                 break
             data_bytes.extend(chunk)
-
         players = pickle.loads(data_bytes)
-        print(players)
         return players
         
     def get_nr_players(self):
