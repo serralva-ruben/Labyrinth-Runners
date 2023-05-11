@@ -19,6 +19,7 @@ class GameUI(object):
         self.x_max = dim[0]
         self.y_max = dim[1]
         self.stub = stub
+        self.player_nr = stub.addPlayer("Rub")
         self.width, self.height = self.x_max * grid_size, self.y_max * grid_size
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Labyrinth Runners")
@@ -56,7 +57,7 @@ class GameUI(object):
             if self.pl[nr] != []:
                 p_x, p_y = self.pl[nr][1][0], self.pl[nr][1][1]
                 player = Player(nr, self.pl[nr][0], p_x, p_y, self.grid_size, self.players)
-                self.players.add(player)
+                self.players.add(player, self.player_nr)
 
     def draw_darkness(self):
         self.hide_surface.fill((0, 0, 0, 255))

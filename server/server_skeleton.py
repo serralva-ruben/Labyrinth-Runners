@@ -3,6 +3,7 @@ import logging
 from game_mech import GameMech
 import const
 import pickle
+import struct
 
 # Está no lado do servidor: Skeleton to user interface 
 # (permite ter informação de como comunicar com o cliente)
@@ -58,6 +59,26 @@ class SkeletonServer:
         # pedir ao gm o nr de players
         nr_obstacles = self.gm.get_nr_obstacles()
         s_c.send(nr_obstacles.to_bytes(const.N_BYTES, byteorder="big", signed=True))
+    
+    import pickle
+
+    def execute(self, s_c, msg):
+        move = msg[1]
+        types = ""
+        if msg[2] == "p":
+            types = "player"
+        number = msg[3]
+        pos = self.gm.execute(move, types, number)
+        data = pickle.dumps(pos)
+
+        # Send the serialized data with a sentinel value
+        s_c.sendall(data + b"<END>")
+
+    def newPlayer(self, s_c, msg):
+        name = msg[2:4]
+        nr_player = self.gm.add_player(name, 1,1,100);
+        s_c.send(nr_player.to_bytes(const.N_BYTES, byteorder="big", signed=True))
+
 
     def run(self):
         logging.info("a escutar na porta " + str(const.PORT))
@@ -83,6 +104,10 @@ class SkeletonServer:
                 self.get_obstacles(socket_client)
             elif msg == const.get_nr_Obstacles :
                 self.get_nr_obstacles(socket_client)
+            elif msg[0] == const.execute:
+                self.execute(socket_client,msg)
+            elif msg[0:1] == const.new_Player:
+                self.newPlayer(socket_client,msg)
             elif msg == const.END:
                 end = True
         socket_client.close()

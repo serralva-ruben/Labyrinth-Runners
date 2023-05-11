@@ -1,7 +1,7 @@
 import socket
 import const
 import pickle
-
+import struct
 
 # Stub do lado do cliente: como comunicar com o servidor...
 class StubClient:
@@ -68,3 +68,38 @@ class StubClient:
         value = self.s.recv(const.N_BYTES)
         nr_obstacles = int.from_bytes(value, byteorder="big", signed=True)
         return nr_obstacles
+
+    def execute(self, move: int, types: str, nr_player: int):
+        msg = const.execute
+        msg += str(move)
+        if types == "player":
+            msg += "p"
+        if nr_player <= 9:
+            msg += str(nr_player)
+        self.s.send(msg.encode(const.STRING_ENCODING))
+
+        # Receive the serialized data
+        received_data = bytearray()
+        while True:
+            chunk = self.s.recv(4096)
+            if not chunk:
+                break
+            received_data.extend(chunk)
+            print("Received Chunk:", chunk)  # Print the received chunk for debugging
+
+        print("Received Data Length:", len(received_data))  # Print the received data length for debugging
+        print("Received Data:", received_data)  # Print the received data for debugging
+
+        # Deserialize the data
+        decoded_data = pickle.loads(received_data)
+        print(decoded_data)
+        return decoded_data
+    
+    def addPlayer(self, name) -> int:
+        msg = const.new_Player
+        if len(name)<3:
+            msg += name
+        self.s.send(msg.encode(const.STRING_ENCODING))
+        value = self.s.recv(const.N_BYTES)
+        nr_player = int.from_bytes(value, byteorder="big", signed=True)
+        return nr_player
