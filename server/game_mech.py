@@ -131,11 +131,19 @@ class GameMech:
         return nr_player
 
     def execute(self, move: int, types: str, nr_player: int) -> tuple:
+        print(f"The movement is going to be: {move}")
+        print(f"The nr of the player is {nr_player}")
+        print(f" the players are: {self.players}")
+        print(self.get_players())
         if types == "player":
+            print(f"if nr player in players : {(nr_player in self.players)}")
+            print(f"nr_player type: {type(nr_player)}, value: {nr_player}")
+            print(f"players keys: {self.players.keys()}")
             if nr_player in self.players:
                 name = self.players[nr_player][0]
                 pos_x, pos_y = self.players[nr_player][1][0], self.players[nr_player][1][1]
                 tick = self.players[nr_player][2]
+                print(f"tick : {tick}")
                 radius = self.players[nr_player][3]
                 if move == M_LEFT:
                     # Get the actual position of the player
@@ -143,29 +151,34 @@ class GameMech:
                     new_pos_x = pos_x - 1
                     new_pos_y = pos_y
                     # if there is an obstacle
+                    print(f"is obstacle: {self.is_obstacle('wall',new_pos_x,new_pos_y)}")
                     if self.is_obstacle('wall', new_pos_x, new_pos_y):
                         new_pos_x = pos_x
                 elif move == M_RIGHT:
                     # New position
                     new_pos_x = pos_x + 1
                     new_pos_y = pos_y
+                    print(f"is obstacle: {self.is_obstacle('wall',new_pos_x,new_pos_y)}")
                     if self.is_obstacle('wall', new_pos_x, new_pos_y):
                         new_pos_x = pos_x
                 elif move == M_UP:
                     # New position
                     new_pos_y = pos_y - 1
                     new_pos_x = pos_x
+                    print(f"is obstacle: {self.is_obstacle('wall',new_pos_x,new_pos_y)}")
                     if self.is_obstacle('wall', new_pos_x, new_pos_y):
                         new_pos_y = pos_y
                 elif move == M_DOWN:
                     # New position
                     new_pos_y = pos_y + 1
                     new_pos_x = pos_x
+                    print(f"is obstacle: {self.is_obstacle('wall',new_pos_x,new_pos_y)}")
                     if self.is_obstacle('wall', new_pos_x, new_pos_y):
                         new_pos_y = pos_y
 
                 # Only after the tick the changes are performed (to coordinate among players)
                 next_tick = int(time.time() * TIME_STEP)
+                print(f"next tick: {next_tick}")
                 if next_tick > tick:
                     tick = next_tick
                     # Update world
@@ -181,6 +194,7 @@ class GameMech:
                     # Revert the changes because there was no movement...
                     new_pos_x = pos_x
                     new_pos_y = pos_y
+                print(f"{new_pos_x}, {new_pos_y}")
                 return new_pos_x, new_pos_y
                 
     def print_pos(self, x: int, y: int):

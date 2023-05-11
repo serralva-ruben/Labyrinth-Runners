@@ -66,8 +66,9 @@ class SkeletonServer:
         types = ""
         if msg[2] == "p":
             types = "player"
-        number = msg[3]
+        number = int(msg[3])
         pos = self.gm.execute(move, types, number)
+        print(f"The new position is : {pos}")
         data = pickle.dumps(pos)
 
         # Send the serialized data with a sentinel value

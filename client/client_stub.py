@@ -29,6 +29,8 @@ class StubClient:
         length = int.from_bytes(length_bytes, byteorder='big')
         # Receive the bytes from the server
         data_bytes = bytearray()
+        print("Received Data Length:", len(data_bytes))  # Print the received data length for debugging
+        print("Received Data:", data_bytes)  # Print the received data for debugging
         while len(data_bytes) < length:
             chunk = self.s.recv(min(4096, length - len(data_bytes)))
             if not chunk:
