@@ -109,8 +109,6 @@ class StubClient:
         msg += str(move)
         if types == "player":
             msg += "p"
-        if nr_player <= 9:
-            msg += str(nr_player)
         self.s.send(msg.encode(const.STRING_ENCODING))
 
         # Recebe os dados serializados

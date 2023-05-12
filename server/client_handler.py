@@ -8,6 +8,8 @@ class ClientHandler:
     def __init__(self, gm_obj: GameMech):
         self.gm = gm_obj
         self.lock = threading.Lock()
+        self.connected_clients = {}
+        self.connected_players = {}
 
     def process_x_max(self, s_c):
         """
@@ -99,15 +101,21 @@ class ClientHandler:
         types = ""
         if msg[2] == "p":
             types = "player"
-        number = int(msg[3])
+        number = self.connected_clients[s_c]
         pos = self.gm.execute(move, types, number)
         print(f"The new position is : {pos}")
         data = pickle.dumps(pos)
         # Send the serialized data with a sentinel value
         s_c.sendall(data + b"<END>")
     
-    def handle_client(self, socket_client, address):
-        print(f"Cliente conectado: Player ID {address}", flush=True)
+    def handle_client(self, socket_client):
+
+        
+        player_index = self.gm.add_player("wtv", 1, 1, 100)
+
+        self.connected_clients[socket_client] = player_index
+        self.connected_players[player_index] = socket_client
+        print(f"Cliente conectado: Player ID {player_index}", flush=True)
 
         try:
             while True:
@@ -151,4 +159,7 @@ class ClientHandler:
 
         # Limpeza de recursos e desconexão do cliente
         socket_client.close()
-        print(f"Cliente desconectado: Player ID {address}", flush=True)
+        del self.connected_clients[socket_client]
+        del self.connected_players[player_index]
+        self.gm.remove_player(player_index)
+        print(f"Cliente desconectado: Player ID {player_index}", flush=True)

@@ -109,11 +109,11 @@ class GameMech:
         :param nr_player: Índice do jogador a remover
         :return: Índice do jogador removido
         """
-        if nr_player <= self.nr_players:
+        if nr_player in self.players:
             name = self.players[nr_player][0]
             x_pos, y_pos = self.players[nr_player][1][0], self.players[nr_player][1][1]
             self.world[(x_pos, y_pos)].remove(['player', name, nr_player, (x_pos, y_pos)])
-            self.players[nr_player] = []
+            self.players.pop(nr_player)
         return nr_player
 
     def print_players(self):

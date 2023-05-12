@@ -20,9 +20,6 @@ class GameUI(object):
         self.x_max = dim[0]
         self.y_max = dim[1]
         self.stub = stub
-
-        self.player_nr = stub.add_player("Rub")
-        
         self.width, self.height = self.x_max * grid_size, self.y_max * grid_size
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Labyrinth Runners")
@@ -75,12 +72,12 @@ class GameUI(object):
         Obscurece o mapa em redor do jogador
         :return: None
         """
+
         self.hide_surface.fill((0, 0, 0, 255))
         p = self.stub.get_players()
-        for player in p:
-            circle_pos = (p[player][1][0] + self.players.sprites()[player].rect.x, p[player][1][1] +
-                          self.players.sprites()[player].rect.y)
-            pygame.draw.circle(self.hide_surface, (255, 255, 255, 0), circle_pos, p[player][3])
+        for player, data in p.items():
+            circle_pos = (data[1][0] * self.grid_size, data[1][1] * self.grid_size)
+            pygame.draw.circle(self.hide_surface, (255, 255, 255, 0), circle_pos, data[3])
             self.hide_surface.set_clip(None)
         self.screen.blit(self.hide_surface, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
 
@@ -109,6 +106,8 @@ class GameUI(object):
         self.walls.draw(self.screen)
         self.set_players()
         end = False
+        nr_players = self.stub.get_nr_players()
+
         # previous_tick = self.stub.get_tick()
 
         # O mundo é atualizado constantemente
@@ -123,6 +122,15 @@ class GameUI(object):
                     # Enviar informação "desconectado"
                     # Se a resposta for ok, então end é verdadeiro
                     end = True
+
+            new_nr_players = self.stub.get_nr_players()
+            if new_nr_players > nr_players:
+                for nr in range(nr_players, new_nr_players):
+                     if nr in self.pl and self.pl[nr] != []:
+                        p_x, p_y = self.pl[nr][1][0], self.pl[nr][1][1]
+                        player = Player(nr, self.pl[nr][0], p_x, p_y, self.grid_size, self.players)
+                        self.players.add(player)
+                nr_players = new_nr_players
 
             self.walls.draw(self.screen)
             self.players.update(self.stub)
