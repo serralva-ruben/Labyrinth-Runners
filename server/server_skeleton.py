@@ -1,5 +1,6 @@
 import socket
 import logging
+import threading
 from game_mech import GameMech
 import const
 import pickle
@@ -15,6 +16,7 @@ class SkeletonServer:
         self.s = socket.socket()
         self.s.bind((const.ADDRESS, const.PORT))
         self.s.listen()
+        self.stop = False  # Flag to indicate whether to stop the server
 
     def process_x_max(self, s_c):
         # pedir ao gm o tamanho do jogo
@@ -60,6 +62,7 @@ class SkeletonServer:
         # pedir ao gm o nr de players
         nr_obstacles = self.gm.get_nr_obstacles()
         s_c.send(nr_obstacles.to_bytes(const.N_BYTES, byteorder="big", signed=True))
+        
 
     def execute(self, s_c, msg):
         move = int(msg[1])
@@ -79,20 +82,12 @@ class SkeletonServer:
         nr_player = self.gm.add_player(name, 1,1,100);
         s_c.send(nr_player.to_bytes(const.N_BYTES, byteorder="big", signed=True))
 
-
-    def run(self):
-        logging.info("a escutar na porta " + str(const.PORT))
-        socket_client, address = self.s.accept()
-        logging.info("o cliente com o endereço " + str(address) + " ligou-se!")
-
-        msg: str = ""
-        end = False
-        while end == False:
+    def handle_client(self, socket_client):
+        while True:
             received_data: bytes = socket_client.recv(const.COMMAND_SIZE)
             msg = received_data.decode(const.STRING_ENCODING)
-            #logging.debug("o cliente enviou: \"" + msg + "\"")
-
-            if len(msg)>0 and msg == const.X_MAX:
+            # Handle client commands based on the received message
+            if len(msg) > 0 and msg == const.X_MAX:
                 self.process_x_max(socket_client)
             elif msg == const.Y_MAX:
                 self.process_y_max(socket_client)
@@ -105,12 +100,26 @@ class SkeletonServer:
             elif msg == const.get_nr_Obstacles :
                 self.get_nr_obstacles(socket_client)
             elif msg[0] == const.execute:
-                self.execute(socket_client,msg)
+                self.execute(socket_client, msg)
             elif msg[0:2] == const.new_Player:
-                self.newPlayer(socket_client,msg)
+                self.newPlayer(socket_client, msg)
             elif msg == const.END:
-                end = True
+                break
+
         socket_client.close()
-        logging.info("o cliente com endereço o " + str(address) + " desligou-se!")
+
+
+    def run(self):
+        logging.info("a escutar na porta " + str(const.PORT))
+        while not self.stop:
+            socket_client, address = self.s.accept()
+            logging.info("o cliente com o endereço " + str(address) + " ligou-se!")
+
+            # Create a new thread for each client connection
+            client_thread = threading.Thread(target=self.handle_client, args=(socket_client,))
+            client_thread.start()
 
         self.s.close()
+
+    def stop_server(self):
+        self.stop = True
