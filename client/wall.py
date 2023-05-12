@@ -1,5 +1,6 @@
 # Seção de Importações
 import pygame
+import os
 
 
 class Wall(pygame.sprite.Sprite):
@@ -13,7 +14,9 @@ class Wall(pygame.sprite.Sprite):
         """
         super().__init__(*groups)
         # Carrega a imagem da parede e dimensione-a conforme o tamanho da parede
-        self.image = pygame.image.load('pictures/wall.jpg')
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        image_dir = os.path.join(current_dir, 'pictures', 'wall.jpg')
+        self.image = pygame.image.load(image_dir)
         initial_size = self.image.get_size()
         size_rate = w_size / initial_size[0]
         self.new_size = (int(self.image.get_size()[0] * size_rate), int(self.image.get_size()[1] * size_rate))

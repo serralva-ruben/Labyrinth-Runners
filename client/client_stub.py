@@ -15,15 +15,17 @@ class StubClient:
         Envia uma mensagem ao servidor para obter o tamanho das dimensões do jogo e retornar os valores recebidos.
         :return: Valores x_max e y_max recebidos do servidor
         """
+        print("getting dimensions")
         msg = const.X_MAX
         self.s.send(msg.encode(const.STRING_ENCODING))
         value = self.s.recv(const.N_BYTES)
         x_max = int.from_bytes(value, byteorder="big", signed=True)
-
+        print(x_max)
         msg = const.Y_MAX
         self.s.send(msg.encode(const.STRING_ENCODING))
         value = self.s.recv(const.N_BYTES)
         y_max = int.from_bytes(value, byteorder="big", signed=True)
+        print(y_max)
         return x_max, y_max
     
     def get_players(self):
@@ -46,6 +48,7 @@ class StubClient:
             data_bytes.extend(chunk)
         # Desserializa os dados recebidos e retorna-os
         players = pickle.loads(data_bytes)
+        print(players)
         return players
         
     def get_nr_players(self):
@@ -80,6 +83,7 @@ class StubClient:
             data_bytes += chunk
         # Desserializa os dados recebidos e retorna-os
         obstacles = pickle.loads(data_bytes)
+        print(obstacles)
         return obstacles
     
     def get_nr_obstacles(self):

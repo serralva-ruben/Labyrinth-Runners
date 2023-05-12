@@ -8,6 +8,7 @@ from game_client import GameUI
 def main():
     # Inicializa o Pygame
     pygame.init()
+    pygame.display.set_mode((800, 600), pygame.RESIZABLE)
     # Cria uma instância nova da class StubClient
     stub = StubClient()
     # Cria uma instância da classe GameUI, passando o stub como parâmetro

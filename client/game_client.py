@@ -20,7 +20,9 @@ class GameUI(object):
         self.x_max = dim[0]
         self.y_max = dim[1]
         self.stub = stub
+
         self.player_nr = stub.add_player("Rub")
+        
         self.width, self.height = self.x_max * grid_size, self.y_max * grid_size
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Labyrinth Runners")

@@ -2,7 +2,7 @@
 import pygame
 import client_stub
 import const as co
-
+import os
 
 class Player(pygame.sprite.DirtySprite):
     def __init__(self, number: int, name: str, pos_x: int, pos_y: int, sq_size: int, *groups):
@@ -18,7 +18,9 @@ class Player(pygame.sprite.DirtySprite):
         super().__init__(*groups)
         self.number = number
         self.name = name
-        self.image = pygame.image.load('./pictures/player.gif')
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        image_dir = os.path.join(current_dir, 'pictures', 'player.gif')
+        self.image = pygame.image.load(image_dir)
         initial_size = self.image.get_size()
         self.sq_size = sq_size
         size_rate = sq_size / initial_size[0]
