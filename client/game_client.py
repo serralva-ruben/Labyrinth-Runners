@@ -61,11 +61,19 @@ class GameUI(object):
         self.pl = self.stub.get_players()
         self.players = pygame.sprite.LayeredDirty()
         nr_players = self.stub.get_nr_players()
+        
+        existing_players = list(self.pl.keys())  # Get the existing player numbers
+        
         for nr in range(nr_players):
-            if self.pl[nr] != []:
+            if nr in existing_players:
                 p_x, p_y = self.pl[nr][1][0], self.pl[nr][1][1]
                 player = Player(nr, self.pl[nr][0], p_x, p_y, self.grid_size, self.players)
                 self.players.add(player)
+            else:
+                # Player disconnected, remove from self.pl
+                self.pl.pop(nr, None)
+        
+        print(f"Players: {self.pl}")
 
     def draw_darkness(self):
         """
