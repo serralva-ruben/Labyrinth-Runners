@@ -1,36 +1,45 @@
-import numpy as np
 import random
 
 
 class MazeGenerator:
     def __init__(self, nr_max_x: int, nr_max_y: int):
+        """
+        Construtor da classe "MazeGenerator"
+        :param nr_max_x: A largura máxima do labirinto
+        :param nr_max_y: A altura máxima do labirinto
+        """
         self.width = nr_max_x
         self.height = nr_max_y
+        # Cria uma matriz 2D de paredes com as dimensões de largura x altura
         self.grid = [[1 for i in range(self.height)] for i in range(self.width)]
 
     def generate_maze(self):
-        # set with all the frontiers
+        """
+        Gera o labirinto usando o algoritmo backtracker recursivo.
+        :return: Uma matriz 2D representando o labirinto
+        """
+        # Define todas as fronteiras
         s = set()
-        # random starting point and set it to not wall
+        # Ponto de partida aleatório e definir-lo para não ser uma parede
         # x, y = (random.randint(1, self.width - 2), random.randint(1, self.height - 2))
         x = 1
         y = 1
         self.grid[x][y] = 0
-        # frontiers of current cell
+        # Fronteiras da célula atual
         fs = self.frontier(x, y)
-        # add them to the set with all the frontiers
+        # Adicionar-los ao conjunto com todas as fronteiras
         for f in fs:
             s.add(f)
-        # will run while there are frontiers in the set
+        # Irá correr enquanto houver fronteiras no conjunto
         while s:
-            # chose random frontier and remove it from the set of all frontiers
+            # Escolhe uma fronteira aleatória e remove-a do conjunto de todas as fronteiras
             x, y = random.choice(tuple(s))
             s.remove((x, y))
-            # neighbours of the random frontier
+            # Vizinhança da fronteira aleatória
             ns = self.neighbours(x, y)
-            # if the random chosen frontier had neighbours
+            # Se a fronteira escolhida aleatoriamente tiver vizinhos
             if ns:
-                # chose a random neighbour and connect them
+                # Escolha de um vizinho aleatório e conexão
                 nx, ny = random.choice(tuple(ns))
                 self.connect(x, y, nx, ny)
             fs = self.frontier(x, y)
@@ -39,6 +48,12 @@ class MazeGenerator:
         return self.grid
         
     def frontier(self, x, y):
+        """
+        Encontra todas as fronteiras da célula dada.
+        :param x: Coordenada x da célula
+        :param y: Coordenada y da célula
+        :return: Um conjunto contendo todas as fronteiras da célula
+        """
         n = set()
         if 1 <= x < self.width-1 and 1 <= y < self.height - 1:
             if x > 1 and self.is_wall(self.grid[x - 2][y]):
@@ -52,6 +67,12 @@ class MazeGenerator:
         return n
 
     def neighbours(self, x, y):
+        """
+        Encontrar toda a vizinhança de uma dada célula
+        :param x: Coordenada x da célula
+        :param y: Coordenada x da célula
+        :return: Um conjunto contendo todos os vizinhos da célula
+        """
         n = set()
         if 1 <= x < self.width-1 and 1 <= y < self.height - 1:
             if x > 1 and not self.is_wall(self.grid[x - 2][y]):
@@ -65,6 +86,11 @@ class MazeGenerator:
         return n
 
     def is_wall(self, cell):
+        """
+        Determina se uma célula é parede ou não
+        :param cell: Valor da célula a ser verificada
+        :return: V se a célula for uma parede (1), F se não for uma parede (0) ou None se o valor for inválido
+        """
         if cell == 1:
             return True
         elif cell == 0:
@@ -73,6 +99,14 @@ class MazeGenerator:
             return None
 
     def connect(self, x1, y1, x2, y2):
+        """
+        Conecta duas células juntas, removendo a parede entre elas.
+        :param x1: A coordenada x da primeira célula
+        :param y1: A coordenada y da primeira célula
+        :param x2: A coordenada x da segunda célula
+        :param y2: A coordenada Y da segunda célula
+        :return: None
+        """
         x = (x1 + x2) // 2
         y = (y1 + y2) // 2
         self.grid[x1][y1] = 0
