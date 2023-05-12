@@ -1,6 +1,13 @@
 import pygame
 import client_stub
 
+###################################################
+# CLASS JOGADOR                                   #
+#  self.numeber - number os players               #
+#  self.name - nome do jogador                    #
+#  self.picture - gif with the player             #
+###################################################
+
 
 # Defining constants for the moves
 M_UP = 0

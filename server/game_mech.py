@@ -10,15 +10,17 @@ M_DOWN = 2
 M_LEFT = 3
 TIME_STEP = 7.5
 
+#####################################################################
+# CLASS GameMech                                                    #
+# Create a dictionary where each position will                      #
+# keep the elements that are in each position and                   #
+# a dictionary with player information (name, nr. of points, etc.)  #
+#   - x_max inteiro 20                                              #
+#   - y_max inteiro 20                                              #
+#####################################################################
 
 class GameMech:
     def __init__(self, x_max: int = 20, y_max: int = 20) -> None:
-        """
-        Create a dictionary where each position will keep the elements that are in each position and
-        a dictionary with player information (name, nr. of points, etc.)
-        :param x_max:
-        :param y_max:
-        """
         self.x_max = x_max
         self.y_max = y_max
         # List of players

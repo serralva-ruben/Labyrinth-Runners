@@ -22,6 +22,8 @@ class StubClient:
         y_max = int.from_bytes(value, byteorder="big", signed=True)
         return x_max, y_max
     
+    
+    #Getters for players 
     def get_players(self):
         msg = const.get_Players
         self.s.send(msg.encode(const.STRING_ENCODING))

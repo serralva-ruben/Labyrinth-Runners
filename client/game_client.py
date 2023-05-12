@@ -4,13 +4,13 @@ from player import Player
 import client_stub
 
 
-"""
-The grid now is built based on the number of squares in x and y.
-This allows us to associate the size of the space to a matrix or to a dictionary
-that will keep data about each position in the environment.
-Moreover, we now can control the movement of the objects.
-We now separate the control of the environment
-"""
+####################################################################################
+# The grid now is built based on the number of squares in x and y.                 #
+# This allows us to associate the size of the space to a matrix or to a dictionary #
+# that will keep data about each position in the environment.                      #
+# Moreover, we now can control the movement of the objects.                        #
+# We now separate the control of the environment                                   #
+####################################################################################
 
 
 class GameUI(object):
@@ -18,6 +18,7 @@ class GameUI(object):
         dim: tuple = stub.dimension_size()
         self.x_max = dim[0]
         self.y_max = dim[1]
+        #create stub for the client self.stub
         self.stub = stub
         self.player_nr = stub.addPlayer("Rub")
         self.width, self.height = self.x_max * grid_size, self.y_max * grid_size
@@ -49,6 +50,8 @@ class GameUI(object):
         for y in range(0, self.y_max):
             pygame.draw.line(self.screen, colour, (0, y * self.grid_size), (self.width, y * self.grid_size))
 
+
+#Getters & setters
     def set_players(self):
         self.pl = self.stub.get_players()
         self.players = pygame.sprite.LayeredDirty()

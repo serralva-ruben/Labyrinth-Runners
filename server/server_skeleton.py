@@ -6,8 +6,16 @@ import pickle
 import struct
 import const
 
-# Está no lado do servidor: Skeleton to user interface 
-# (permite ter informação de como comunicar com o cliente)
+####################################################################################
+# Está no lado do servidor: Skeleton to user interface                             #
+# (permite ter informação de como comunicar com o cliente)                         #
+#  Class SkeletonServer                                                            #
+#    - gm_obj                                                                      #
+#    - s  create de sockets for the skeletonserver and adds the address and port    #
+#        for the comunication                                                         #
+####################################################################################
+
+
 class SkeletonServer:
 
     def __init__(self, gm_obj: GameMech):
