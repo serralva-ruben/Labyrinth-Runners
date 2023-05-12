@@ -95,25 +95,26 @@ class SkeletonServer:
             received_data: bytes = socket_client.recv(const.COMMAND_SIZE)
             msg = received_data.decode(const.STRING_ENCODING)
             # Handle client commands based on the received message
-            if len(msg) > 0 and msg == const.X_MAX:
-                self.process_x_max(socket_client)
-            elif msg == const.Y_MAX:
-                self.process_y_max(socket_client)
-            elif msg == const.get_Players :
-                self.get_Players(socket_client)
-            elif msg == const.get_nr_Players :
-                self.get_nr_Players(socket_client)
-            elif msg == const.get_Obstacles :
-                self.get_obstacles(socket_client)
-            elif msg == const.get_nr_Obstacles :
-                self.get_nr_obstacles(socket_client)
-            elif msg[0] == const.execute:
-                self.execute(socket_client, msg)
-            elif msg[0:2] == const.new_Player:
-                self.newPlayer(socket_client, msg)
-            elif msg == const.END:
-                break
-
+            if len(msg) > 0 :
+                if msg == const.X_MAX:
+                    self.process_x_max(socket_client)
+                elif msg == const.Y_MAX:
+                    self.process_y_max(socket_client)
+                elif msg == const.get_Players :
+                    self.get_Players(socket_client)
+                elif msg == const.get_nr_Players :
+                    self.get_nr_Players(socket_client)
+                elif msg == const.get_Obstacles :
+                    self.get_obstacles(socket_client)
+                elif msg == const.get_nr_Obstacles :
+                    self.get_nr_obstacles(socket_client)
+                elif msg[0] == const.execute:
+                    self.execute(socket_client, msg)
+                elif msg[0:2] == const.new_Player:
+                    self.newPlayer(socket_client, msg)
+                elif msg == const.END:
+                    break
+                
         socket_client.close()
 
 
