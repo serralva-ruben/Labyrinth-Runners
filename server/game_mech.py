@@ -1,55 +1,46 @@
-# GameMech
+# Seção de Importações
 from maze import MazeGenerator
 import time
-from matplotlib import pyplot as plt
+import const as co
 
-# Defining constants for the moves
-M_UP = 0
-M_RIGHT = 1
-M_DOWN = 2
-M_LEFT = 3
-TIME_STEP = 7.5
-
-#####################################################################
-# CLASS GameMech                                                    #
-# Create a dictionary where each position will                      #
-# keep the elements that are in each position and                   #
-# a dictionary with player information (name, nr. of points, etc.)  #
-#   - x_max inteiro 20                                              #
-#   - y_max inteiro 20                                              #
-#####################################################################
 
 class GameMech:
     def __init__(self, x_max: int = 20, y_max: int = 20) -> None:
+        """
+        Cria um dicionário onde cada posição manterá os elementos que estão em cada posição e um dicionário com
+        informações do jogador (nome, nr. de pontos, etc.)
+        :param x_max: Recebe um valor 'int' no eixo x que determinará o comprimento do tabuleiro nesse mesmo eixo.
+        :param y_max: Recebe um valor 'int' no eixo y que determinará o comprimento do tabuleiro nesse mesmo eixo.
+        """
         self.x_max = x_max
         self.y_max = y_max
-        # List of players
+        # Lista de Jogadores
         self.players = dict()
-        # List of players that changed position. It has the following structure:
-        # [previous position, new_position] where the first position is the initial position when the key is created
+        # Lista de jogadores que mudaram de posição. Possui a seguinte estrutura:
+        # [posição anterior, nova_posição] onde a primeira posição é a posição inicial quando a chave é criada
         self.phantom_players = dict()
-        # List of obstacles
+        # Lista de Obstáculos
         self.obstacles = dict()
-        # Number of players and obstacles in the game
+        # Número de jogadores e obstáculos no jogo
         self.nr_players = 0
         self.nr_obstacles = 0
-        # Initializing each world's position with a list
+        # Inicialização de cada posição no mundo com uma lista
         self.world = dict()
         for i in range(x_max):
             for j in range(y_max):
                 self.world[(i, j)] = []
-        # Add the obstacles to the world
+        # Adição de obstáculos no mundo
         self.create_world()
-        # TEST
+        # Teste
         self.counting = 0
 
     def add_obstacle(self, types: str, x_pos: int, y_pos: int) -> bool:
         """
-
-        :param types:
-        :param x_pos:
-        :param y_pos:
-        :return:
+        Função que adiciona um novo obstáculo no mundo
+        :param types: uma 'string' representando o tipo de obstáculo adicionado
+        :param x_pos: um valor 'int' representando a coordenada x da localização do obstáculo
+        :param y_pos: um valor 'int' representando a coordenada y da localização do obstáculo
+        :return: Retorna um valor booleano indicando se o obstáculo foi adicionado com sucesso
         """
         nr_obstacle = self.nr_obstacles
         self.obstacles[nr_obstacle] = [types, (x_pos, y_pos)]
@@ -59,8 +50,8 @@ class GameMech:
     
     def create_world(self):
         """
-        Define the initial world with the position of the obstacles
-        :return:
+        Define o mundo inicial com a posição dos obstáculos
+        :return: None
         """
         maze = MazeGenerator(self.x_max, self.y_max)
         grid = maze.generate_maze()
@@ -71,6 +62,13 @@ class GameMech:
                     self.add_obstacle("wall", y, x)
 
     def is_obstacle(self, types, x, y):
+        """
+        Verifica se há um obstáculo de um determinado tipo numa determinada posição
+        :param types:
+        :param x: Valor de x a verificar
+        :param y: Valor de y a verificar
+        :return: Verdadeiro se houver um obstáculo do tipo dado na posição dada, Falso caso contrário
+        """
         for e in self.world[(x, y)]:
             if e[0] == 'obstacle' and e[1] == types:
                 return True
@@ -78,18 +76,39 @@ class GameMech:
 
     # Getters
     def get_players(self):
+        """
+        Retorna a lista de jogadores
+        :return: Lista de jogadores
+        """
         return self.players
 
     def get_obstacles(self):
+        """
+        Retorna a lista de obstáculos
+        :return: lista de obstáculos
+        """
         return self.obstacles
 
     def get_nr_obstacles(self):
+        """
+        Retorna o número de obstáculos no mundo
+        :return: número de obstáculos
+        """
         return self.nr_obstacles
 
     def get_nr_players(self):
+        """
+        Retorna o número de jogadores no mundo
+        :return: número de jogadores no mundo
+        """
         return self.nr_players
 
     def remove_player(self, nr_player) -> int:
+        """
+        Remove um jogador do mundo conforme o seu índice.
+        :param nr_player: Índice do jogador a remover
+        :return: Índice do jogador removido
+        """
         if nr_player <= self.nr_players:
             name = self.players[nr_player][0]
             x_pos, y_pos = self.players[nr_player][1][0], self.players[nr_player][1][1]
@@ -99,87 +118,102 @@ class GameMech:
 
     def print_players(self):
         """
-
-        :return:
+        Imprime as informações de todos os jogadores
+        :return: None
         """
         for p in self.players:
             print("Nr. ", p)
             print("Value:", self.players[p])
 
-    # Each player has a specific time.
+    # Cada jogador tem um tempo específico.
     def add_player(self, name, x_pos: int, y_pos: int, radius: int) -> int:
         """
-
-        :param name: the name of the player
-        :param x_pos:
-        :param y_pos:
-        :param radius:
-        :return: return the number of player
+        Adiciona um jogador ao jogo com o nome, posição e raio fornecidos
+        :param name: Nome do Jogador
+        :param x_pos: a coordenada x da posição do jogador
+        :param y_pos: a coordenada y da posição do jogador
+        :param radius: o raio do jogador
+        :return: o número do jogador
         """
         nr_player = self.nr_players
-        #
-        # Collect the actual tick and keep it in the player
-        # Each player has its own tick because we are using the tick increment
-        # in each call is made to the game mechanics. This is something that is
-        # going to change in the implementations with sockets where time is the
-        # absolute value that comes from the server.
-        #
+
+        # Coleta o tick real e mantenha-o no jogador. Cada jogador tem o seu próprio tick porque usamos o
+        # incremento de tick em cada chamada é feita a mecânica do jogo.
+        # Isso é vai mudar nas implementações com ‘sockets’ onde o tempo é o valor absoluto que vem do servidor.
+
         tick = int(time.time())
 
         self.players[nr_player] = [name, (x_pos, y_pos), tick, radius]
         self.world[(x_pos, y_pos)].append(['player', name, nr_player, (x_pos, y_pos)])
         self.nr_players += 1
-
         return nr_player
 
     def execute(self, move: int, types: str, nr_player: int) -> tuple:
+        """
+        Esta função executa um movimento de um jogador no jogo, atualizando a posição do jogador no mundo
+         e retornando as novas coordenadas de posição.
+        :param move: Movimento a ser executado
+        :param types: O tipo de objeto a ser movido (por exemplo, jogador, item, etc.)
+        :param nr_player: O número do jogador a ser movido
+        :return: um tuplo com as novas coordenadas de posição x e y do jogador
+        """
         print(f"The movement is going to be: {move}")
         print(f"The nr of the player is {nr_player}")
         print(f" the players are: {self.players}")
         print(self.get_players())
+
         if types == "player":
             print(f"if nr player in players : {(nr_player in self.players)}")
             print(f"nr_player type: {type(nr_player)}, value: {nr_player}")
             print(f"players keys: {self.players.keys()}")
+
             if nr_player in self.players:
                 name = self.players[nr_player][0]
                 pos_x, pos_y = self.players[nr_player][1][0], self.players[nr_player][1][1]
                 tick = self.players[nr_player][2]
                 print(f"tick : {tick}")
                 radius = self.players[nr_player][3]
-                if move == M_LEFT:
-                    # Get the actual position of the player
-                    # New position
+
+                # Movimenta o Jogador à Esquerda
+                if move == co.M_LEFT:
+                    # Adquire a posição atual do jogador
+                    # Nova posição do jogador
                     new_pos_x = pos_x - 1
                     new_pos_y = pos_y
-                    # if there is an obstacle
+                    # Se houver um obstáculo
                     print(f"is obstacle: {self.is_obstacle('wall',new_pos_x,new_pos_y)}")
                     if self.is_obstacle('wall', new_pos_x, new_pos_y):
                         new_pos_x = pos_x
-                elif move == M_RIGHT:
-                    # New position
+
+                # Movimenta o Jogador à Direita
+                elif move == co.M_RIGHT:
+                    # Nova Posição
                     new_pos_x = pos_x + 1
                     new_pos_y = pos_y
                     print(f"is obstacle: {self.is_obstacle('wall',new_pos_x,new_pos_y)}")
                     if self.is_obstacle('wall', new_pos_x, new_pos_y):
                         new_pos_x = pos_x
-                elif move == M_UP:
-                    # New position
+
+                # Movimenta o Jogador para Cima
+                elif move == co.M_UP:
+                    # Nova Posição
                     new_pos_y = pos_y - 1
                     new_pos_x = pos_x
                     print(f"is obstacle: {self.is_obstacle('wall',new_pos_x,new_pos_y)}")
                     if self.is_obstacle('wall', new_pos_x, new_pos_y):
                         new_pos_y = pos_y
-                elif move == M_DOWN:
-                    # New position
+
+                # Movimenta o Jogador para Baixo
+                elif move == co.M_DOWN:
+                    # Nova Posição
                     new_pos_y = pos_y + 1
                     new_pos_x = pos_x
                     print(f"is obstacle: {self.is_obstacle('wall',new_pos_x,new_pos_y)}")
                     if self.is_obstacle('wall', new_pos_x, new_pos_y):
                         new_pos_y = pos_y
 
-                # Only after the tick the changes are performed (to coordinate among players)
-                next_tick = int(time.time() * TIME_STEP)
+                # Somente após o tick as alterações são realizadas (para coordenar entre os jogadores)
+                next_tick = int(time.time() * co.TIME_STEP)
                 print(f"next tick: {next_tick}")
                 if next_tick > tick:
                     tick = next_tick
@@ -193,7 +227,7 @@ class GameMech:
                     self.world[(pos_x, pos_y)] = world_pos
                     self.world[(new_pos_x, new_pos_y)].append(['player', name, nr_player, (new_pos_x, new_pos_y)])
                 else:
-                    # Revert the changes because there was no movement...
+                    # Reverte as alterações, pois não houve movimentação...
                     new_pos_x = pos_x
                     new_pos_y = pos_y
                 print(f"{new_pos_x}, {new_pos_y}")
@@ -201,17 +235,17 @@ class GameMech:
                 
     def print_pos(self, x: int, y: int):
         """
-
-        :param x:
-        :param y:
-        :return:
+        Imprime o conteúdo de uma posição específica no mundo
+        :param x: Coordenada x da posição
+        :param y: Coordenada y da posição
+        :return: None
         """
         print("(x= ", x, ", y=", y, ") =", self.world[(x, y)])
 
     def print_world(self):
         """
-
-        :return:
+        Imprime o mundo inteiro, com o respetivo conteúdo de cada posição.
+        :return: None
         """
         for i in range(self.x_max):
             for j in range(self.y_max):

@@ -1,16 +1,17 @@
+# Seção de Importações
 import pygame
 from wall import Wall
 from player import Player
 import client_stub
 
 
-####################################################################################
-# The grid now is built based on the number of squares in x and y.                 #
-# This allows us to associate the size of the space to a matrix or to a dictionary #
-# that will keep data about each position in the environment.                      #
-# Moreover, we now can control the movement of the objects.                        #
-# We now separate the control of the environment                                   #
-####################################################################################
+"""
+A grelha agora é construída com base no número de quadrados em x e y.
+Isso nos permite associar o tamanho do espaço a uma matriz ou a um dicionário
+que manterá os dados sobre cada posição no ambiente.
+Além disso, agora podemos controlar o movimento dos objetos.
+Agora separamos o controlo do ambiente
+"""
 
 
 class GameUI(object):
@@ -18,41 +19,46 @@ class GameUI(object):
         dim: tuple = stub.dimension_size()
         self.x_max = dim[0]
         self.y_max = dim[1]
-        #create stub for the client self.stub
         self.stub = stub
-        self.player_nr = stub.addPlayer("Rub")
+        self.player_nr = stub.add_player("Rub")
         self.width, self.height = self.x_max * grid_size, self.y_max * grid_size
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Labyrinth Runners")
         self.clock = pygame.time.Clock()
-        # RGB colours
+        # Cores RGB
         self.white = (255, 255, 255)
         self.black = (0, 0, 0)
         # Grid
         self.grid_size = grid_size
         grid_colour = self.black
-        # Create The Background
+        # Cria o Fundo
         self.background = pygame.Surface(self.screen.get_size())
         self.background = self.background.convert()
         self.background.fill(self.white)
         self.screen.blit(self.background, (0, 0))
         self.draw_grid(self.black)
 
-        # Create surface for hiding everything outside the player's radius
+        # Crie uma superfície para esconder tudo fora do raio do jogador
         self.hide_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
         self.hide_surface.fill((255, 255, 255, 255))
         pygame.display.update()
 
-    # Drawing a square grid
     def draw_grid(self, colour: tuple):
+        """
+        Desenhe a grelha no ecrã.
+        :param colour: A cor das linhas de grelha
+        :return: None
+        """
         for x in range(0, self.x_max):
             pygame.draw.line(self.screen, colour, (x * self.grid_size, 0), (x * self.grid_size, self.height))
         for y in range(0, self.y_max):
             pygame.draw.line(self.screen, colour, (0, y * self.grid_size), (self.width, y * self.grid_size))
 
-
-#Getters & setters
     def set_players(self):
+        """
+        Coloca os jogadores no ecrã
+        :return: None
+        """
         self.pl = self.stub.get_players()
         self.players = pygame.sprite.LayeredDirty()
         nr_players = self.stub.get_nr_players()
@@ -63,6 +69,10 @@ class GameUI(object):
                 self.players.add(player)
 
     def draw_darkness(self):
+        """
+        Obscurece o mapa em redor do jogador
+        :return: None
+        """
         self.hide_surface.fill((0, 0, 0, 255))
         p = self.stub.get_players()
         for player in p:
@@ -73,8 +83,13 @@ class GameUI(object):
         self.screen.blit(self.hide_surface, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
 
     def set_walls(self, wall_size: int):
+        """
+        Desenha as paredes no ecrã
+        :param wall_size: Tamanho das paredes
+        :return: None
+        """
         self.wl = self.stub.get_obstacles()
-        # Create Wall (sprites) around world
+        # Cria as paredes (sprites) ao redor do mundo
         self.walls = pygame.sprite.Group()
         nr_obstacles = self.stub.get_nr_obstacles()
         for nr in range(nr_obstacles):
@@ -84,23 +99,27 @@ class GameUI(object):
                 self.walls.add(wall)
 
     def run(self):
+        """
+        Inicializa o jogo
+        :return: Verdadeiro se o jogo terminou com sucesso, falso caso contrário.
+        """
         self.set_walls(self.grid_size)
         self.walls.draw(self.screen)
         self.set_players()
         end = False
         # previous_tick = self.stub.get_tick()
 
-        # World is updated every time
+        # O mundo é atualizado constantemente
         world = dict()
         while not end:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    # send information "disconnected"
-                    # if answer is ok, then end is true
+                    # Enviar informação "desconectado"
+                    # Se a resposta for ok, então end é verdadeiro
                     end = True
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    # send information "disconnected"
-                    # if answer is ok, them end is true
+                    # Enviar informação "desconectado"
+                    # Se a resposta for ok, então end é verdadeiro
                     end = True
 
             self.walls.draw(self.screen)
@@ -111,5 +130,4 @@ class GameUI(object):
             pygame.display.flip()
             self.players.clear(self.screen, self.background)
             self.screen.fill((255, 255, 255))
-
         return True

@@ -1,11 +1,18 @@
+# Seção de Importações
 from game_mech import GameMech
 from server_skeleton import SkeletonServer
 
 
-
-#Starts the server calling gm and skeleton classes with the port + address he connects 
+# Função que cria uma instância GameMech, cria uma instância SkeletonServer com a instância anterior como parâmetro e
+# executa o servidor.
 def main():
-    gm = GameMech(20,20)
+    # Cria uma instância da classe GameMech com tamanho de tabuleiro 30x30 quadrículas
+    gm = GameMech(30, 30)
+    # Cria uma instância da classe SkeletonServer, passando a instância GameMech como parâmetro
     skeleton = SkeletonServer(gm)
+    # Inicia o servidor
     skeleton.run()
-main()
+
+
+if __name__ == "__main__":
+    main()
