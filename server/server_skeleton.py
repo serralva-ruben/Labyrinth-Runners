@@ -128,24 +128,25 @@ class SkeletonServer:
             msg = received_data.decode(const.STRING_ENCODING)
             # logging.debug("o cliente enviou: \"" + msg + "\"")
 
-            if len(msg) > 0 and msg == const.X_MAX:
-                self.process_x_max(socket_client)
-            elif msg == const.Y_MAX:
-                self.process_y_max(socket_client)
-            elif msg == const.get_Players:
-                self.get_players(socket_client)
-            elif msg == const.get_nr_Players:
-                self.get_nr_players(socket_client)
-            elif msg == const.get_Obstacles:
-                self.get_obstacles(socket_client)
-            elif msg == const.get_nr_Obstacles:
-                self.get_nr_obstacles(socket_client)
-            elif msg[0] == const.execute:
-                self.execute(socket_client, msg)
-            elif msg[0:2] == const.new_Player:
-                self.new_player(socket_client, msg)
-            elif msg == const.END:
-                end = True
+            if len(msg) > 0:
+                if msg == const.X_MAX:
+                    self.process_x_max(socket_client)
+                elif msg == const.Y_MAX:
+                    self.process_y_max(socket_client)
+                elif msg == const.get_Players:
+                    self.get_players(socket_client)
+                elif msg == const.get_nr_Players:
+                    self.get_nr_players(socket_client)
+                elif msg == const.get_Obstacles:
+                    self.get_obstacles(socket_client)
+                elif msg == const.get_nr_Obstacles:
+                    self.get_nr_obstacles(socket_client)
+                elif msg[0] == const.execute:
+                    self.execute(socket_client, msg)
+                elif msg[0:2] == const.new_Player:
+                    self.new_player(socket_client, msg)
+                elif msg == const.END:
+                    end = True
         socket_client.close()
         logging.info("O cliente com o endereço " + str(address) + " desconectou-se!")
         self.s.close()
