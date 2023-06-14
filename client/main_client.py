@@ -11,8 +11,9 @@ def main():
     pygame.display.set_mode((800, 600), pygame.RESIZABLE)
     # Cria uma instância nova da class StubClient
     stub = StubClient()
+    player_id = stub.add_player("Alice")
     # Cria uma instância da classe GameUI, passando o stub como parâmetro
-    ui = GameUI(stub)
+    ui = GameUI(stub, player_id)
     # Inicia a User Interface
     ui.run()
 

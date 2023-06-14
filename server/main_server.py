@@ -7,7 +7,7 @@ from server_skeleton import SkeletonServer
 # executa o servidor.
 def main():
     # Cria uma instância da classe GameMech com tamanho de tabuleiro 30x30 quadrículas
-    gm = GameMech(30, 30)
+    gm = GameMech(31, 31)
     # Cria uma instância da classe SkeletonServer, passando a instância GameMech como parâmetro
     skeleton = SkeletonServer(gm)
     # Inicia o servidor

@@ -14,6 +14,8 @@ get_Obstacles = "gt_Ob"
 get_nr_Obstacles = "g_n_O"
 execute = "e"
 new_Player = "np"
+get_finish = "gt_fn"
+get_status = "gt_st"
 
 # Definição de constantes para os movimentos
 M_UP = 0

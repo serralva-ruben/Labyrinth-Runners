@@ -15,7 +15,7 @@ Agora separamos o controlo do ambiente
 
 
 class GameUI(object):
-    def __init__(self, stub: client_stub.StubClient, grid_size: int = 20):
+    def __init__(self, stub: client_stub.StubClient, player_id, grid_size: int = 20):
         dim: tuple = stub.dimension_size()
         self.x_max = dim[0]
         self.y_max = dim[1]
@@ -42,6 +42,10 @@ class GameUI(object):
         self.hide_surface.fill((255, 255, 255, 255))
         pygame.display.update()
 
+        self.player_id = player_id
+        self.players = pygame.sprite.LayeredDirty()  # Initialize self.players
+        self.players_dict = {}
+
     def draw_grid(self, colour: tuple):
         """
         Desenhe a grelha no ecrã.
@@ -59,7 +63,6 @@ class GameUI(object):
         :return: None
         """
         self.pl = self.stub.get_players()
-        self.players = pygame.sprite.LayeredDirty()
         nr_players = self.stub.get_nr_players()
         
         existing_players = list(self.pl.keys())  # Get the existing player numbers
@@ -67,11 +70,18 @@ class GameUI(object):
         for nr in range(nr_players):
             if nr in existing_players:
                 p_x, p_y = self.pl[nr][1][0], self.pl[nr][1][1]
-                player = Player(nr, self.pl[nr][0], p_x, p_y, self.grid_size, self.players)
+                if nr not in self.players_dict:  # This player is new
+                    player = Player(nr, self.pl[nr][0], p_x, p_y, self.grid_size)
+                    self.players_dict[nr] = player  # Store the player object in self.players_dict
+                else:
+                    player = self.players_dict[nr]  # This player already exists
+                    # Here, you can update player's attributes if needed
                 self.players.add(player)
             else:
-                # Player disconnected, remove from self.pl
+                # Player disconnected, remove from self.pl and self.players_dict
                 self.pl.pop(nr, None)
+                if nr in self.players_dict:
+                    self.players_dict.pop(nr)
         
         print(f"Players: {self.pl}")
 
@@ -104,23 +114,37 @@ class GameUI(object):
                 w_x, w_y = self.wl[nr][1][0], self.wl[nr][1][1]
                 wall = Wall(w_x, w_y, self.grid_size, self.walls)
                 self.walls.add(wall)
+    
+    def draw_finish(self, colour: tuple):
+        """Draw the finish cell on the screen."""
+        x, y = self.finish_cell
+        pygame.draw.rect(self.screen, colour, pygame.Rect(x * self.grid_size, y * self.grid_size, self.grid_size, self.grid_size))
 
     def run(self):
         """
         Inicializa o jogo
         :return: Verdadeiro se o jogo terminou com sucesso, falso caso contrário.
         """
+
+        window = pygame.display.get_surface()
+        window_size = window.get_size()
+        width, height = window_size
+
         self.set_walls(self.grid_size)
         self.walls.draw(self.screen)
         self.set_players()
         end = False
         nr_players = self.stub.get_nr_players()
 
-        # previous_tick = self.stub.get_tick()
-
         # O mundo é atualizado constantemente
         world = dict()
+
+        self.finish_cell = self.stub.get_finish() 
+
         while not end:
+
+            game_over, winner = self.stub.get_game_status()
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     # Enviar informação "desconectado"
@@ -140,12 +164,25 @@ class GameUI(object):
                         self.players.add(player)
                 nr_players = new_nr_players
 
-            self.walls.draw(self.screen)
-            self.players.update(self.stub)
-            self.players.draw(self.screen)
-            self.draw_grid(self.black)
-            self.draw_darkness()
-            pygame.display.flip()
-            self.players.clear(self.screen, self.background)
-            self.screen.fill((255, 255, 255))
+            if not game_over:
+                self.walls.draw(self.screen)
+                self.players.update(self.stub)
+                self.players.draw(self.screen)
+                self.draw_grid(self.black)
+                self.draw_darkness()
+                self.draw_finish((255, 0, 0))
+                pygame.display.flip()
+                self.players.clear(self.screen, self.background)
+                self.screen.fill((200, 200, 200))
+
+            else:
+                if self.player_id == self.stub.get_game_status()[1]:
+                    message = "You won!"
+                else:
+                    message = "You lost!"
+                font = pygame.font.Font(None, 36)
+                text = font.render(message, True, (255, 255, 255))
+                text_rect = text.get_rect(center=(width // 2, height // 2))
+                self.screen.blit(text, text_rect)
+                pygame.display.flip()
         return True

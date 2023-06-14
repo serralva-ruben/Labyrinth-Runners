@@ -96,6 +96,20 @@ class StubClient:
         value = self.s.recv(const.N_BYTES)
         nr_obstacles = int.from_bytes(value, byteorder="big", signed=True)
         return nr_obstacles
+    
+    def get_finish(self):
+        msg = const.get_finish
+        self.s.send(msg.encode(const.STRING_ENCODING))
+        data = self.s.recv(const.N_BYTES)
+        finish = pickle.loads(data)  # Deserializing the received data
+        return finish
+    
+    def get_game_status(self):
+        msg = const.get_status
+        self.s.send(msg.encode(const.STRING_ENCODING))
+        data = self.s.recv(const.N_BYTES)
+        finish = pickle.loads(data)  # Deserializing the received data
+        return finish
 
     def execute(self, move: int, types: str, nr_player: int):
         """
@@ -121,9 +135,6 @@ class StubClient:
             print("Received Chunk:", chunk)  # Imprime o chunk recebido para 'debug'
             if b"<END>" in received_data:
                 break
-
-        print("Received Data Length:", len(received_data))  # Imprime o comprimento dos dados recebidos para 'debug'
-        print("Received Data:", received_data)  # Imprime os dados recebidos para 'debug'
 
         if len(received_data) > 0:
             # Remove o valor sentinela dos dados recebidos

@@ -1,4 +1,5 @@
 # Seção de Importações
+import random
 from maze import MazeGenerator
 import time
 import const as co
@@ -33,6 +34,8 @@ class GameMech:
         self.create_world()
         # Teste
         self.counting = 0
+        self.game_over = False
+        self.winner = None
 
     def add_obstacle(self, types: str, x_pos: int, y_pos: int) -> bool:
         """
@@ -55,11 +58,26 @@ class GameMech:
         """
         maze = MazeGenerator(self.x_max, self.y_max)
         grid = maze.generate_maze()
+
+        last_row = []
+        last_column = []
                 
         for x in range(self.x_max):
             for y in range(self.y_max):
                 if grid[x][y] == 1:
                     self.add_obstacle("wall", y, x)
+                if x == self.x_max - 2:  # Last row
+                    last_row.append((y, x))
+                if y == self.y_max - 2:  # Last column
+                    last_column.append((y, x))
+
+       # Choose a random cell from the last row or column that isn't a wall
+        potential_finish_cells = last_row + last_column
+        potential_finish_cells = [cell for cell in potential_finish_cells if not self.is_obstacle("wall", *cell)]
+        
+        self.finish = random.choice(potential_finish_cells) if potential_finish_cells else None
+
+        print(self.finish)
 
     def is_obstacle(self, types, x, y):
         """
@@ -174,6 +192,14 @@ class GameMech:
                 print(f"tick : {tick}")
                 radius = self.players[nr_player][3]
 
+                new_pos_x = pos_x
+                new_pos_y = pos_y
+
+                if self.players[nr_player][1] == self.finish:
+                    self.game_over = True
+                    self.winner = nr_player
+                    return new_pos_x, new_pos_y                 
+
                 # Movimenta o Jogador à Esquerda
                 if move == co.M_LEFT:
                     # Adquire a posição atual do jogador
@@ -250,3 +276,9 @@ class GameMech:
         for i in range(self.x_max):
             for j in range(self.y_max):
                 print("(", i, ",", j, ") =", self.world[(i, j)])
+
+    def get_finish(self):
+        return self.finish
+
+    def get_game_status(self):
+        return self.game_over, self.winner

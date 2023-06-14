@@ -34,6 +34,9 @@ class Player(pygame.sprite.DirtySprite):
         :return: O tamanho do jogador
         """
         return self.new_size
+    
+    def get_nr(self):
+        return self.number
 
     def moveto(self, new_x: int, new_y: int):
         """

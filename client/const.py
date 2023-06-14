@@ -3,7 +3,7 @@ PORT = 8000
 COMMAND_SIZE = 5
 END = "END  "
 MSG_SIZE = 40
-N_BYTES = 2
+N_BYTES = 18
 BUFFER_SIZE = 1024
 STRING_ENCODING = 'utf-8'
 X_MAX = "max x"
@@ -14,6 +14,8 @@ get_Obstacles = "gt_Ob"
 get_nr_Obstacles = "g_n_O"
 execute = "e"
 new_Player = "np"
+get_finish = "gt_fn"
+get_status = "gt_st"
 
 # Definição de constantes para os movimentos
 M_UP = 0

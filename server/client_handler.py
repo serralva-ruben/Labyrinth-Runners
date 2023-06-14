@@ -81,6 +81,16 @@ class ClientHandler:
         nr_obstacles = self.gm.get_nr_obstacles()
         s_c.send(nr_obstacles.to_bytes(const.N_BYTES, byteorder="big", signed=True))
 
+    def get_finish(self, s_c):
+        finish = self.gm.get_finish()
+        data = pickle.dumps(finish)  # Serializing the tuple
+        s_c.send(data)
+    
+    def get_game_status(self, s_c):
+        status = self.gm.get_game_status()
+        data = pickle.dumps(status)  # Serializing the tuple
+        s_c.send(data)
+
     def new_player(self, s_c, msg):
         """
         Adiciona um novo jogador ao jogo.
@@ -90,6 +100,10 @@ class ClientHandler:
         name = msg[2:4]
         nr_player = self.gm.add_player(name, 1, 1, 100)
         s_c.send(nr_player.to_bytes(const.N_BYTES, byteorder="big", signed=True))
+
+        # Assign this new player to the connected client
+        self.connected_clients[s_c] = nr_player
+        self.connected_players[nr_player] = s_c
 
     def execute(self, s_c, msg):
         """
@@ -110,12 +124,7 @@ class ClientHandler:
     
     def handle_client(self, socket_client):
 
-        
-        player_index = self.gm.add_player("wtv", 1, 1, 100)
-
-        self.connected_clients[socket_client] = player_index
-        self.connected_players[player_index] = socket_client
-        print(f"Cliente conectado: Player ID {player_index}", flush=True)
+        self.connected_clients[socket_client] = None
 
         try:
             while True:
@@ -151,15 +160,26 @@ class ClientHandler:
                     elif msg[0:2] == const.new_Player:
                         with self.lock:
                             self.new_player(socket_client, msg)
+                    elif msg == const.get_finish:
+                        with self.lock:
+                            self.get_finish(socket_client)
+                    elif msg == const.get_status:
+                        with self.lock:
+                            self.get_game_status(socket_client)
                     elif msg == const.END:
                         break
 
         except Exception as e:
             print(f"Erro ao lidar com o cliente: {e}", flush=True)
 
-        # Limpeza de recursos e desconexão do cliente
-        socket_client.close()
-        del self.connected_clients[socket_client]
-        del self.connected_players[player_index]
-        self.gm.remove_player(player_index)
-        print(f"Cliente desconectado: Player ID {player_index}", flush=True)
+        finally:
+            # Cleanup resources and disconnect client
+            player_index = self.connected_clients[socket_client]
+            socket_client.close()
+            del self.connected_clients[socket_client]
+
+            if player_index is not None:
+                del self.connected_players[player_index]
+                self.gm.remove_player(player_index)
+
+            print(f"Client disconnected: Player ID {player_index if player_index is not None else 'unknown'}", flush=True)
