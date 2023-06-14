@@ -43,6 +43,7 @@ class GameUI(object):
         pygame.display.update()
 
         self.player_id = player_id
+        self.player_name = player_name
         self.players = pygame.sprite.LayeredDirty()  # Initialize self.players
         self.players_dict = {}
 
@@ -178,7 +179,7 @@ class GameUI(object):
 
             else:
                 if self.player_id == self.stub.get_game_status()[1]:
-                    message = "You won!"
+                    message = f"{self.player_name}, congratulations you won!"
                 else:
                     message = "You lost!"
                 font = pygame.font.Font(None, 36)
