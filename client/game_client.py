@@ -15,14 +15,14 @@ Agora separamos o controlo do ambiente
 
 
 class GameUI(object):
-    def __init__(self, stub: client_stub.StubClient, player_id, grid_size: int = 20):
+    def __init__(self, stub: client_stub.StubClient, player_id, player_name, grid_size: int = 20):
         dim: tuple = stub.dimension_size()
         self.x_max = dim[0]
         self.y_max = dim[1]
         self.stub = stub
         self.width, self.height = self.x_max * grid_size, self.y_max * grid_size
         self.screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption("Labyrinth Runners")
+        pygame.display.set_caption("Labyrinth Runners - Player: "+player_name)
         self.clock = pygame.time.Clock()
         # Cores RGB
         self.white = (255, 255, 255)
@@ -166,11 +166,12 @@ class GameUI(object):
 
             if not game_over:
                 self.walls.draw(self.screen)
+                self.draw_finish((255, 0, 0))
+
                 self.players.update(self.stub)
                 self.players.draw(self.screen)
                 self.draw_grid(self.black)
                 self.draw_darkness()
-                self.draw_finish((255, 0, 0))
                 pygame.display.flip()
                 self.players.clear(self.screen, self.background)
                 self.screen.fill((200, 200, 200))
