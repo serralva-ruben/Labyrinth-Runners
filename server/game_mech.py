@@ -51,6 +51,21 @@ class GameMech:
         self.nr_obstacles += 1
         return True
     
+    def add_obstacle_powerup(self, types: str, x_pos: int, y_pos: int, image_path: str) -> bool:
+        """
+        Function that adds a new obstacle to the world
+        :param types: a 'str' representing the type of obstacle being added
+        :param x_pos: an 'int' value representing the x-coordinate of the obstacle's location
+        :param y_pos: an 'int' value representing the y-coordinate of the obstacle's location
+        :param image_path: a 'str' representing the file path or reference to the obstacle's image
+        :return: Returns a boolean value indicating whether the obstacle was successfully added
+        """
+        nr_obstacle = self.nr_obstacles
+        self.obstacles[nr_obstacle] = [types, (x_pos, y_pos), image_path]
+        self.world[(x_pos, y_pos)].append(['obstacle', types, nr_obstacle, (x_pos, y_pos), image_path])
+        self.nr_obstacles += 1
+        return True
+        
     def create_world(self):
         """
         Define o mundo inicial com a posição dos obstáculos

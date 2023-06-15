@@ -116,10 +116,14 @@ class GameUI(object):
                 wall = Wall(w_x, w_y, self.grid_size, self.walls)
                 self.walls.add(wall)
     
-    def draw_finish(self, colour: tuple):
-        """Draw the finish cell on the screen."""
+    def draw_finish(self, image_path):
+        """Desenha a imagem final(portal)"""
         x, y = self.finish_cell
-        pygame.draw.rect(self.screen, colour, pygame.Rect(x * self.grid_size, y * self.grid_size, self.grid_size, self.grid_size))
+        finish_image = pygame.image.load(image_path)
+        finish_image = pygame.transform.scale(finish_image, (self.grid_size, self.grid_size))
+        self.screen.blit(finish_image, (x * self.grid_size, y * self.grid_size))
+        
+        
 
     def run(self):
         """
@@ -141,7 +145,7 @@ class GameUI(object):
         world = dict()
 
         self.finish_cell = self.stub.get_finish() 
-
+      
         while not end:
 
             game_over, winner = self.stub.get_game_status()
@@ -167,8 +171,8 @@ class GameUI(object):
 
             if not game_over:
                 self.walls.draw(self.screen)
-                self.draw_finish((255, 0, 0))
-
+                self.draw_finish("client\icons\portal.png")
+                #self.draw_powerups("client\icons\strawberry.png")
                 self.players.update(self.stub)
                 self.players.draw(self.screen)
                 self.draw_grid(self.black)
