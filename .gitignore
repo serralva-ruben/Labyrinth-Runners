@@ -1,25 +1,6 @@
 
-.idea/vcs.xml
-.idea/inspectionProfiles/profiles_settings.xml
-.idea/Labyrinth-Runners.iml
-.idea/modules.xml
-.idea/misc.xml
-.idea/sonarlint/issuestore/b/7/b7fee375d0f4a9d4ab8e0e8c189004c1d8798e0e
-.idea/sonarlint/issuestore/4/6/46f05ba1bc9aacca48cacb476a68ebf273514ac0
-.idea/sonarlint/issuestore/e/6/e6d9f24f3da2f4c90bf9de5ff19bfef0ccdbfe3e
-.idea/sonarlint/securityhotspotstore/c/2/c2c49c95bf7abb73702987ca4a9f27e5fbb8a2eb
-.idea/sonarlint/issuestore/index.pb
-.idea/sonarlint/issuestore/c/f/cff14ce72a05031194b4f2354ee77237f1286a66
-.idea/sonarlint/issuestore/c/2/c2c49c95bf7abb73702987ca4a9f27e5fbb8a2eb
-.idea/sonarlint/issuestore/2/f/2faa82161e2c7643304b9892495f268df7f40c7a
-.idea/inspectionProfiles/Project_Default.xml
-.idea/sonarlint/securityhotspotstore/2/f/2faa82161e2c7643304b9892495f268df7f40c7a
-.idea/sonarlint/securityhotspotstore/c/f/cff14ce72a05031194b4f2354ee77237f1286a66
+.idea/
 *.pb
-.idea/sonarlint/securityhotspotstore/e/6/e6d9f24f3da2f4c90bf9de5ff19bfef0ccdbfe3e
-.idea/sonarlint/securityhotspotstore/b/7/b7fee375d0f4a9d4ab8e0e8c189004c1d8798e0e
-.idea/sonarlint/securityhotspotstore/4/6/46f05ba1bc9aacca48cacb476a68ebf273514ac0
-.idea/workspace.xml
 __pycache__/game.cpython-311.pyc
 __pycache__/game_mech.cpython-311.pyc
 __pycache__/maze.cpython-311.pyc
