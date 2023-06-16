@@ -171,7 +171,7 @@ class GameUI(object):
 
             if not game_over:
                 self.walls.draw(self.screen)
-                self.draw_finish("client\icons\portal.png")
+                self.draw_finish(".\icons\portal.png")
                 #self.draw_powerups("client\icons\strawberry.png")
                 self.players.update(self.stub)
                 self.players.draw(self.screen)
@@ -187,6 +187,7 @@ class GameUI(object):
                 else:
                     message = "You lost!"
                 font = pygame.font.Font(None, 36)
+                self.screen.fill((56, 5, 7))
                 text = font.render(message, True, (255, 255, 255))
                 text_rect = text.get_rect(center=(width // 2, height // 2))
                 self.screen.blit(text, text_rect)
