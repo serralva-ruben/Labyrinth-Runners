@@ -86,7 +86,7 @@ class GameMech:
                 if y == self.y_max - 2:  # Last column
                     last_column.append((y, x))
 
-       # Choose a random cell from the last row or column that isn't a wall
+        # Choose a random cell from the last row or column that isn't a wall
         potential_finish_cells = last_row + last_column
         potential_finish_cells = [cell for cell in potential_finish_cells if not self.is_obstacle("wall", *cell)]
         

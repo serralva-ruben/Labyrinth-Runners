@@ -4,6 +4,7 @@ import client_stub
 import const as co
 import os
 
+
 class Player(pygame.sprite.DirtySprite):
     def __init__(self, number: int, name: str, pos_x: int, pos_y: int, sq_size: int, *groups):
         """

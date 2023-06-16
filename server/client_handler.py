@@ -3,6 +3,7 @@ import threading
 import const
 from game_mech import GameMech
 
+
 class ClientHandler:
 
     def __init__(self, gm_obj: GameMech):
@@ -182,4 +183,5 @@ class ClientHandler:
                 del self.connected_players[player_index]
                 self.gm.remove_player(player_index)
 
-            print(f"Client disconnected: Player ID {player_index if player_index is not None else 'unknown'}", flush=True)
+            print(f"Client disconnected: Player ID {player_index if player_index is not None else 'unknown'}",
+                  flush=True)

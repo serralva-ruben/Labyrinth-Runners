@@ -4,7 +4,6 @@ from wall import Wall
 from player import Player
 import client_stub
 
-
 """
 A grelha agora é construída com base no número de quadrados em x e y.
 Isso nos permite associar o tamanho do espaço a uma matriz ou a um dicionário
@@ -22,7 +21,7 @@ class GameUI(object):
         self.stub = stub
         self.width, self.height = self.x_max * grid_size, self.y_max * grid_size
         self.screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption("Labyrinth Runners - Player: "+player_name)
+        pygame.display.set_caption("Labyrinth Runners - Player: " + player_name)
         self.clock = pygame.time.Clock()
         # Cores RGB
         self.white = (255, 255, 255)
@@ -65,9 +64,9 @@ class GameUI(object):
         """
         self.pl = self.stub.get_players()
         nr_players = self.stub.get_nr_players()
-        
+
         existing_players = list(self.pl.keys())  # Get the existing player numbers
-        
+
         for nr in range(nr_players):
             if nr in existing_players:
                 p_x, p_y = self.pl[nr][1][0], self.pl[nr][1][1]
@@ -83,7 +82,7 @@ class GameUI(object):
                 self.pl.pop(nr, None)
                 if nr in self.players_dict:
                     self.players_dict.pop(nr)
-        
+
         print(f"Players: {self.pl}")
 
     def draw_darkness(self):
@@ -115,15 +114,13 @@ class GameUI(object):
                 w_x, w_y = self.wl[nr][1][0], self.wl[nr][1][1]
                 wall = Wall(w_x, w_y, self.grid_size, self.walls)
                 self.walls.add(wall)
-    
+
     def draw_finish(self, image_path):
         """Desenha a imagem final(portal)"""
         x, y = self.finish_cell
         finish_image = pygame.image.load(image_path)
         finish_image = pygame.transform.scale(finish_image, (self.grid_size, self.grid_size))
         self.screen.blit(finish_image, (x * self.grid_size, y * self.grid_size))
-        
-        
 
     def run(self):
         """
@@ -144,8 +141,8 @@ class GameUI(object):
         # O mundo é atualizado constantemente
         world = dict()
 
-        self.finish_cell = self.stub.get_finish() 
-      
+        self.finish_cell = self.stub.get_finish()
+
         while not end:
 
             game_over, winner = self.stub.get_game_status()
@@ -163,7 +160,7 @@ class GameUI(object):
             new_nr_players = self.stub.get_nr_players()
             if new_nr_players > nr_players:
                 for nr in range(nr_players, new_nr_players):
-                     if nr in self.pl and self.pl[nr] != []:
+                    if nr in self.pl and self.pl[nr] != []:
                         p_x, p_y = self.pl[nr][1][0], self.pl[nr][1][1]
                         player = Player(nr, self.pl[nr][0], p_x, p_y, self.grid_size, self.players)
                         self.players.add(player)
@@ -172,7 +169,7 @@ class GameUI(object):
             if not game_over:
                 self.walls.draw(self.screen)
                 self.draw_finish(".\icons\portal.png")
-                #self.draw_powerups("client\icons\strawberry.png")
+                # self.draw_powerups("client\icons\strawberry.png")
                 self.players.update(self.stub)
                 self.players.draw(self.screen)
                 self.draw_grid(self.black)
